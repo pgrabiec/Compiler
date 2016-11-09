@@ -1,4 +1,4 @@
-from src import AST
+import AST
 
 
 def addToClass(cls):

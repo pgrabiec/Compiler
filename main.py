@@ -1,8 +1,7 @@
 import sys
-
 import ply.yacc as yacc
 
-from src.Cparser import Cparser
+from Cparser import Cparser
 
 if __name__ == '__main__':
 
