@@ -1,6 +1,5 @@
 *.iml
 .idea
-grammar.txt
 *.out
 parsetab.py
 __pycache__
