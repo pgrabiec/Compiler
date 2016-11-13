@@ -70,6 +70,7 @@ class Instructions(Node):
     def add_instruction(self, instruction):
         self.instructions.append(instruction)
 
+# ------------------------------
 
 class ReturnInstruction(Node):
     def __init__(self):

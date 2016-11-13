@@ -39,8 +39,6 @@ class Cparser(object):
             program = ast.Program()
             program.set_segments(segments=segments)
             p[0] = program
-        else:
-            raise Exception
 
     def p_segments(self, p):
         """segments : segments segment
@@ -52,8 +50,6 @@ class Cparser(object):
             else:
                 p[0] = p[1]
                 p[0].add_segment(p[2])
-        else:
-            raise Exception
 
     def p_segment(self, p):
         """segment : variable_inits
@@ -61,8 +57,8 @@ class Cparser(object):
                    | instructions """
         p[0] = ast.Segment(p[1])
 
-    def p_variable_inits(self, p):
-        """variable_inits : variable_inits variable_init
+    def p_declarations(self, p):
+        """declarations : declarations declaration
                         | """
         if len(p) == 3:
             if p[1] is None:
@@ -74,99 +70,107 @@ class Cparser(object):
         else:
             raise Exception
 
-    # TODO
-    def p_variable_init(self, p):
-        """variable_init : TYPE inits ';'
+    def p_declaration(self, p):
+        """declaration : TYPE inits ';'
                        | error ';' """
         if len(p) == 4:
             p[0] = ast.Init()
-            p[0].set_variable(p[1])     # TODO - is it correct?
-            p[0].set_expression(p[2])   # TODO - is it correct?
-        elif len(p) == 3:
-            raise Exception
-            # TODO - should it raise exception?
+            p[0].set_variable(p[1])
+            p[0].set_expression(p[2])
 
-    # TODO
     def p_inits(self, p):
         """inits : inits ',' init
                  | init """
+        if len(p) == 4:
+            if p[1] is None:
+                p[0] = ast.Inits()
+                p[0].add_init(p[3])
+            else:
+                p[0] = p[1]
+                p[0].add_init(p[3])
+        else:
+            p[0] = ast.Inits()
+            p[0].add_init(p[1])
 
-    # TODO
     def p_init(self, p):
         """init : ID '=' expression """
+        p[0] = ast.Init()
+        p[0].set_variable(p[1])
+        p[0].set_expression(p[3])
 
-    #
-    # -----------------------------------
-    #
-
-    # TODO
-    def p_instructions_opt(self, p):
-        """instructions_opt : instructions
-                            | """
-
-    # TODO
     def p_instructions(self, p):
         """instructions : instructions instruction
                         | instruction """
+        if len(p) == 3:
+            if p[1] is None:
+                p[0] = ast.Instructions()
+            else:
+                p[0] = p[1]
+            p[0].add_instruction(p[2])
+        else:
+            p[0] = ast.Instructions()
+            p[0].add_instruction(p[1])
 
-    # TODO
     def p_instruction(self, p):
-        """instruction : print_instr
-                       | labeled_instr
+        """instruction : print_instruction
+                       | labeled_instruction
                        | assignment
-                       | choice_instr
-                       | while_instr
-                       | repeat_instr
-                       | return_instr
-                       | break_instr
-                       | continue_instr
-                       | compound_instr
+                       | choice_instruction
+                       | while_instruction
+                       | repeat_instruction
+                       | return_instruction
+                       | break_instruction
+                       | continue_instruction
+                       | compound_instruction
                        | expression ';' """
+        p[0] = p[1]
+
+# ------------------------------
 
     # TODO
-    def p_print_instr(self, p):
-        """print_instr : PRINT expr_list ';'
+    def p_print_instruction(self, p):
+        """print_instruction : PRINT expr_list ';'
                        | PRINT error ';' """
 
     # TODO
-    def p_labeled_instr(self, p):
-        """labeled_instr : ID ':' instruction """
+    def p_labeled_instruction(self, p):
+        """labeled_instruction : ID ':' instruction """
 
     # TODO
     def p_assignment(self, p):
         """assignment : ID '=' expression ';' """
 
     # TODO
-    def p_choice_instr(self, p):
-        """choice_instr : IF '(' condition ')' instruction  %prec IFX
-                        | IF '(' condition ')' instruction ELSE instruction
-                        | IF '(' error ')' instruction  %prec IFX
-                        | IF '(' error ')' instruction ELSE instruction """
+    def p_choice_instruction(self, p):
+        """choice_instruction : IF '(' condition ')' instruction  %prec IFX
+                                | IF '(' condition ')' instruction ELSE instruction
+                                | IF '(' error ')' instruction  %prec IFX
+                                | IF '(' error ')' instruction ELSE instruction """
 
     # TODO
-    def p_while_instr(self, p):
-        """while_instr : WHILE '(' condition ')' instruction
+    def p_while_instruction(self, p):
+        """while_instruction : WHILE '(' condition ')' instruction
                        | WHILE '(' error ')' instruction """
 
     # TODO
-    def p_repeat_instr(self, p):
-        """repeat_instr : REPEAT instructions UNTIL condition ';' """
+    def p_repeat_instruction(self, p):
+        """repeat_instruction : REPEAT instructions UNTIL condition ';' """
 
     # TODO
-    def p_return_instr(self, p):
-        """return_instr : RETURN expression ';' """
+    def p_return_instruction(self, p):
+        """return_instruction : RETURN expression ';' """
 
     # TODO
-    def p_continue_instr(self, p):
-        """continue_instr : CONTINUE ';' """
+    def p_break_instruction(self, p):
+        """break_instruction : BREAK ';' """
 
     # TODO
-    def p_break_instr(self, p):
-        """break_instr : BREAK ';' """
+    def p_continue_instruction(self, p):
+        """continue_instruction : CONTINUE ';' """
 
     # TODO
-    def p_compound_instr(self, p):
-        """compound_instr : '{' compound_segments '}' """
+    def p_compound_instruction(self, p):
+        """compound_instruction : '{' compound_segments '}' """
 
     # TODO
     def p_compound_segments(self, p):
@@ -223,6 +227,14 @@ class Cparser(object):
     def p_expr_list(self, p):
         """expr_list : expr_list ',' expression
                      | expression """
+
+
+
+
+
+
+
+
 
     # TODO
     def p_fundefs_opt(self, p):
