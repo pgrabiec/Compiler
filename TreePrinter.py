@@ -53,7 +53,7 @@ class TreePrinter:
         raise Exception("Print tree not implemented in class " + self.__class__.__name__)
 
     # TODO - PG
-    @addToClass(AST.Declaration)
+    @addToClass(AST.Init)
     def printTree(self):
         raise Exception("Print tree not implemented in class " + self.__class__.__name__)
 

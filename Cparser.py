@@ -66,11 +66,11 @@ class Cparser(object):
                         | """
         if len(p) == 3:
             if p[1] is None:
-                p[0] = ast.VariableInits()
-                p[0].add_variable_init(p[2])
+                p[0] = ast.Declarations()
+                p[0].add_declaration(p[2])
             else:
                 p[0] = p[1]
-                p[0].add_variable_init(p[2])
+                p[0].add_declaration(p[2])
         else:
             raise Exception
 
@@ -79,7 +79,7 @@ class Cparser(object):
         """variable_init : TYPE inits ';'
                        | error ';' """
         if len(p) == 4:
-            p[0] = ast.VariableInit()
+            p[0] = ast.Init()
             p[0].set_variable(p[1])     # TODO - is it correct?
             p[0].set_expression(p[2])   # TODO - is it correct?
         elif len(p) == 3:

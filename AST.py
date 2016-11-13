@@ -5,7 +5,6 @@ class Node(object):
 
 class Program(Node):
     def __init__(self):
-        super().__init__()
         self.segments = None
 
     def set_segments(self, segments):
@@ -15,7 +14,6 @@ class Program(Node):
 
 class Segments(Node):
     def __init__(self):
-        super().__init__()
         self.segments = []
 
     def add_segment(self, segment):
@@ -28,23 +26,31 @@ class Segment(Node):
         self.content = content
 
 
-class CompoundSegment(Node):
-    pass
-
-
-class VariableInits(Segment, CompoundSegment):
+class Declarations(Node):
     def __init__(self):
-        super().__init__()
-        self.variable_inits = []
+        self.declarations = []
 
-    def add_variable_init(self, variable_init):
-        """:arg variable_init : AST.VariableInit"""
-        self.variable_inits.append(variable_init)
+    def add_declaration(self, declaration):
+        """:arg declaration : AST.Init"""
+        self.declarations.append(declaration)
 
 
-class VariableInit(Node):
+class Declaration(Node):
+    def __init__(self, variable_type, inits):
+        self.variable_type = variable_type
+        self.inits = inits
+
+
+class Inits(Node):
     def __init__(self):
-        super().__init__()
+        self.inits = []
+
+    def add_init(self, init):
+        self.inits.append(init)
+
+
+class Init(Node):
+    def __init__(self):
         self.variable = None
         self.expression = None
 
@@ -55,108 +61,18 @@ class VariableInit(Node):
     def set_expression(self, expression):
         """:arg expression : AST.Expression"""
         self.expression = expression
-#
-# -----------------------------------
-#
 
 
-class FunctionDefinitions(Segment):
+class Instructions(Node):
     def __init__(self):
-        super().__init__()
-        self.function_definitions = []
-
-    def add_function_definition(self, function_definition):
-        """:arg function_definition : AST.FunctionDefinition"""
-        self.function_definitions.append(function_definition)
-
-
-class FunctionDefinition(Node):
-    def __init__(self):
-        super().__init__()
-        self.type = None
-        self.identifier = None
-        self.arguments = None
-        self.instructions = None
-
-    def set_type(self, type):
-        """:arg type : string"""
-        self.type = type
-
-    def set_identifier(self, identifier):
-        """:arg identifier : string"""
-        self.identifier = identifier
-
-    def set_arguments(self, arguments):
-        """:arg arguments : AST.FunctionArguments"""
-        self.arguments = arguments
-
-    def set_instructions(self, instrunctions):
-        """:arg instrunctions : AST.CompoundInstruction"""
-        self.instructions = instrunctions
-
-
-class FunctionArguments(Node):
-    def __init__(self):
-        super().__init__()
-        self.arguments = []
-
-    def add_function_argument(self, argument):
-        """:arg argument : AST.FunctionArgument"""
-        self.arguments.append(argument)
-
-
-class FunctionArgument(Node):
-    def __init__(self):
-        super().__init__()
-        self.argument_type = None
-        self.argument_identifier = None
-
-    def set_argument_type(self, argument_type):
-        """:arg argument_type : string"""
-        self.argument_type = argument_type
-
-    def set_argument_identifier(self, argument_identifier):
-        """:arg argument_identifier : string"""
-        self.argument_identifier = argument_identifier
-
-
-class CompoundSegments(Node):
-    def __init__(self):
-        super().__init__()
-        self.segments = []
-
-    def add_segment(self, segment):
-        """:arg segment : AST.CompoundSegment"""
-        self.segments.append(segment)
-
-
-class InstructionsList(Segment, CompoundSegment):
-    def __init__(self):
-        super().__init__()
         self.instructions = []
 
     def add_instruction(self, instruction):
-        """:arg instruction : AST.Instruction"""
         self.instructions.append(instruction)
 
 
-class Instruction(Node):
-    pass
-
-
-class CompoundInstruction(Instruction):
+class ReturnInstruction(Node):
     def __init__(self):
-        super().__init__()
-        self.instructions = None
-
-    def set_instructions(self, instructions):
-        """:arg instructions : AST.CompoundSegments"""
-        self.instructions = instructions
-
-
-class ReturnInstruction(Instruction):
-    def __init__(self):
-        super().__init__()
         self.expression = None
 
     def set_expression(self, expression):
@@ -164,18 +80,18 @@ class ReturnInstruction(Instruction):
         self.expression = expression
 
 
-class BreakInstruction(Instruction):
+class BreakInstruction(Node):
     pass
 
 
-class ContinueInstruction(Instruction):
+class ContinueInstruction(Node):
     pass
 
 
-class ExpressionInstruction(Instruction):
+class ExpressionInstruction(Node):
     """Matches: 'instruction -> expression ;'"""
+
     def __init__(self):
-        super().__init__()
         self.expression = None
 
     def set_expression(self, expression):
@@ -183,19 +99,8 @@ class ExpressionInstruction(Instruction):
         self.expression = expression
 
 
-class ExpressionList(Node):
+class PrintInstruction(Node):
     def __init__(self):
-        super().__init__()
-        self.expressions = []
-
-    def add_expression(self, expression):
-        """:arg expression : AST.Expression"""
-        self.expressions.append(expression)
-
-
-class PrintInstruction(Instruction):
-    def __init__(self):
-        super().__init__()
         self.args = None
 
     def set_args(self, args):
@@ -203,9 +108,8 @@ class PrintInstruction(Instruction):
         self.args = args
 
 
-class LabeledInstruction(Instruction):
+class LabeledInstruction(Node):
     def __init__(self):
-        super().__init__()
         self.identifier = None
         self.instruction = None
 
@@ -218,9 +122,8 @@ class LabeledInstruction(Instruction):
         self.instruction = instruction
 
 
-class Assignment(Instruction):
+class Assignment(Node):
     def __init__(self):
-        super().__init__()
         self.variable = None
         self.expression = None
 
@@ -233,9 +136,8 @@ class Assignment(Instruction):
         self.expression = expression
 
 
-class IfInstruction(Instruction):
+class ChoiceInstruction(Node):
     def __init__(self):
-        super().__init__()
         self.condition = None
         self.instruction_true = None
         self.instruction_false = None
@@ -253,9 +155,8 @@ class IfInstruction(Instruction):
         self.instruction_false = instruction
 
 
-class WhileInstruction(Instruction):
+class WhileInstruction(Node):
     def __init__(self):
-        super().__init__()
         self.condition = None
         self.instruction = None
 
@@ -268,9 +169,8 @@ class WhileInstruction(Instruction):
         self.instruction = instruction
 
 
-class RepeatInstruction(Instruction):
+class RepeatInstruction(Node):
     def __init__(self):
-        super().__init__()
         self.condition = None
         self.instructions = None
 
@@ -279,21 +179,35 @@ class RepeatInstruction(Instruction):
         self.condition = condition
 
     def set_instructions(self, instructions):
-        """:arg instructions : AST.InstructionsList"""
+        """:arg instructions : AST.Instructions"""
         self.instructions = instructions
 
 
-class Expression(Node):
-    pass
-
-
-class Const(Expression):
+class CompoundInstruction(Node):
     def __init__(self):
-        super().__init__()
-        self.value = None
+        self.instructions = None
 
-    def set_value(self, value):
-        """:arg value : string"""
+    def set_instructions(self, instructions):
+        """:arg instructions : AST.CompoundSegments"""
+        self.instructions = instructions
+
+
+class CompoundSegments(Node):
+    def __init__(self):
+        self.segments = []
+
+    def add_segment(self, segment):
+        """:arg segment : AST.CompoundSegment"""
+        self.segments.append(segment)
+
+
+class CompoundSegment(Node):
+    def __init__(self, content):
+        self.content = content
+
+
+class Const(Node):
+    def __init__(self, value):
         self.value = value
 
 
@@ -309,10 +223,16 @@ class String(Const):
     pass
 
 
-class Variable(Expression):
-    """Matches ID terminals when they are associated with a variable"""
+class Condition(Node):
+    def __init__(self, expression):
+        self.expression = expression
+
+
+class Variable(Node):
+    """Matches ID terminals when they are associated with a variable
+        Also, matches the production: expression -> ID"""
+
     def __init__(self):
-        super().__init__()
         self.identifier = None
 
     def set_identifier(self, identifier):
@@ -322,7 +242,6 @@ class Variable(Expression):
 
 class BinExpr(Node):
     def __init__(self):
-        super().__init__()
         self.op = None
         self.left = None
         self.right = None
@@ -340,9 +259,15 @@ class BinExpr(Node):
         self.left = right
 
 
-class FunctionCall(Expression):
+class BracketExpression(Node):
+    """Matches production expression -> ( expression )"""
+
+    def __init__(self, expression):
+        self.expression = expression
+
+
+class FunctionCallExpression(Node):
     def __init__(self):
-        super().__init__()
         self.identifier = None
         self.arguments = None
 
@@ -353,3 +278,68 @@ class FunctionCall(Expression):
     def set_arguments(self, arguments):
         """:arg arguments : AST.ExpressionList"""
         self.arguments = arguments
+
+
+class ExpressionList(Node):
+    def __init__(self):
+        self.expressions = []
+
+    def add_expression(self, expression):
+        """:arg expression : AST.Expression"""
+        self.expressions.append(expression)
+
+
+class FunctionDefinitions(Node):
+    def __init__(self):
+        self.function_definitions = []
+
+    def add_function_definition(self, function_definition):
+        """:arg function_definition : AST.FunctionDefinition"""
+        self.function_definitions.append(function_definition)
+
+
+class FunctionDefinition(Node):
+    def __init__(self):
+        self.type = None
+        self.identifier = None
+        self.arguments = None
+        self.instructions = None
+
+    def set_type(self, type):
+        """:arg type : string"""
+        self.type = type
+
+    def set_identifier(self, identifier):
+        """:arg identifier : string"""
+        self.identifier = identifier
+
+    def set_arguments(self, arguments):
+        """:arg arguments : AST.ArgumentsList"""
+        self.arguments = arguments
+
+    def set_instructions(self, instrunctions):
+        """:arg instrunctions : AST.CompoundInstruction"""
+        self.instructions = instrunctions
+
+
+class ArgumentsList(Node):
+    def __init__(self):
+        self.arguments = []
+
+    def add_argument(self, argument):
+        """:arg argument : AST.Argument"""
+        self.arguments.append(argument)
+
+
+class Argument(Node):
+    def __init__(self):
+        self.argument_type = None
+        self.argument_identifier = None
+
+    def set_argument_type(self, argument_type):
+        """:arg argument_type : string"""
+        self.argument_type = argument_type
+
+    def set_argument_identifier(self, argument_identifier):
+        """:arg argument_identifier : string"""
+        self.argument_identifier = argument_identifier
