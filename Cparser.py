@@ -1,5 +1,5 @@
-from scanner import Scanner
 import AST as ast
+from scanner import Scanner
 
 
 class Cparser(object):
@@ -138,7 +138,7 @@ class Cparser(object):
         p[0].set_identifier(p[1])
         p[0].set_instruction(p[3])
 
-# ------------------------------
+    # ------------------------------
 
     # TODO
     def p_assignment(self, p):
@@ -180,6 +180,7 @@ class Cparser(object):
     def p_compound_segments(self, p):
         """compound_segments : compound_segments compound_segment
                              | """
+
     # TODO
     def p_compound_segment(self, p):
         """compound_segment : declarations

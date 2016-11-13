@@ -93,6 +93,7 @@ class LabeledInstruction(Node):
         """:arg instruction : AST.Instruction"""
         self.instruction = instruction
 
+
 # ------------------------------
 
 
@@ -293,12 +294,6 @@ class Argument(Node):
     def set_argument_identifier(self, argument_identifier):
         """:arg argument_identifier : string"""
         self.argument_identifier = argument_identifier
-
-
-
-
-
-
 
 
 class Variable(Node):
