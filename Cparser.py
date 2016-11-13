@@ -1,4 +1,5 @@
 from scanner import Scanner
+import AST as ast
 
 
 class Cparser(object):
@@ -34,7 +35,13 @@ class Cparser(object):
     # TODO - PG
     def p_program(self, p):
         """program : segments """
-        p[0] = "Result for matching goes here"
+        if len(p) == 2:
+            segments = p[1]
+            program = ast.Program()
+            program.set_segments(segments=segments)
+            p[0] = program
+        else:
+            raise Exception()
 
     def p_segments(self, p):
         """segments : segments segment

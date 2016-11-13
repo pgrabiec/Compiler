@@ -49,6 +49,71 @@ class VariableInit(Node):
 
     def set_expression(self, expression):
         """:arg expression : AST.Expression"""
+        self.expression = expression
+
+
+class FunctionDefinitions(Segment):
+    def __init__(self):
+        super().__init__()
+        self.function_definitions = []
+
+    def add_function_definition(self, function_definition):
+        """:arg function_definition : AST.FunctionDefinition"""
+        self.function_definitions.append(function_definition)
+
+
+class FunctionDefinition(Node):
+    def __init__(self):
+        super().__init__()
+        self.type = None
+        self.identifier = None
+        self.arguments = None
+        self.instructions = None
+
+    def set_type(self, type):
+        """:arg type : string"""
+        self.type = type
+
+    def set_identifier(self, identifier):
+        """:arg identifier : string"""
+        self.identifier = identifier
+
+    def set_arguments(self, arguments):
+        """:arg arguments : AST.FunctionArguments"""
+        self.arguments = arguments
+
+    def set_instructions(self, instrunctions):
+        """:arg instrunctions : AST.CompoundInstruction"""
+        self.instructions = instrunctions
+
+
+class FunctionArguments(Node):
+    def __init__(self):
+        super().__init__()
+        self.arguments = []
+
+    def add_function_argument(self, argument):
+        """:arg argument : AST.FunctionArgument"""
+        self.arguments.append(argument)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
