@@ -33,11 +33,17 @@ class Cparser(object):
 
     # TODO - PG
     def p_program(self, p):
-        """program : program declarations
-                   | program fundefs_opt
-                   | program instructions_opt
-                   | """
+        """program : segments """
         p[0] = "Result for matching goes here"
+
+    def p_segments(self, p):
+        """segments : segments segment
+                   | """
+
+    def p_segment(self, p):
+        """segment : declarations
+                   | fundefs_opt
+                   | instructions_opt """
 
     # TODO - PG
     def p_declarations(self, p):
@@ -125,7 +131,15 @@ class Cparser(object):
 
     # TODO - WB
     def p_compound_instr(self, p):
-        """compound_instr : '{' declarations instructions_opt '}' """
+        """compound_instr : '{' compound_segments '}' """
+
+    def p_compound_segments(self, p):
+        """compound_segments : compound_segments compound_segment
+                             | """
+
+    def p_compound_segment(self, p):
+        """compound_segment : declarations
+                             | instructions_opt """
 
     # TODO - WB
     def p_condition(self, p):

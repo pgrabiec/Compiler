@@ -3,6 +3,66 @@ class Node(object):
         return self.printTree()
 
 
+class Program(Node):
+    def __init__(self):
+        super().__init__()
+        self.segments = None
+
+    def set_segments(self, segments):
+        """:arg segments : AST.Segments"""
+        self.segments = segments
+
+
+class Segments(Node):
+    def __init__(self):
+        super().__init__()
+        self.segments = []
+
+    def add_segment(self, segment):
+        """:arg segment : AST.Segment"""
+        self.segments.append(segment)
+
+
+class Segment(Node):
+    pass
+
+
+class VariableInits(Segment):
+    def __init__(self):
+        super().__init__()
+        self.variable_inits = []
+
+    def add_variable_init(self, variable_init):
+        """:arg variable_init : AST.VariableInit"""
+        self.variable_inits.append(variable_init)
+
+
+class VariableInit(Node):
+    def __init__(self):
+        super().__init__()
+        self.variable = None
+        self.expression = None
+
+    def set_variable(self, variable):
+        """:arg variable : AST.Variable"""
+        self.variable = variable
+
+    def set_expression(self, expression):
+        """:arg expression : AST.Expression"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class BinExpr(Node):
     def __init__(self, op, left, right):
         self.op = op
@@ -10,166 +70,25 @@ class BinExpr(Node):
         self.right = right
 
 
-# TODO - PG
 class Const(Node):
-    pass
+    def __init__(self, value):
+        super().__init__()
+        self.value = value
 
 
-# Done
 class Integer(Const):
     pass
 
 
-# Done
 class Float(Const):
     pass
 
 
-# Done
 class String(Const):
     pass
 
 
-# TODO - PG
 class Variable(Node):
-    pass
-
-
-# TODO - PG
-class Program(Node):
-    pass
-
-
-# TODO - PG
-class Declarations(Node):
-    pass
-
-
-# TODO - PG
-class Declaration(Node):
-    pass
-
-
-# TODO - PG
-class Inits(Node):
-    pass
-
-
-# TODO - PG
-class Init(Node):
-    pass
-
-
-# TODO - PG
-class InstructionsOpt(Node):
-    pass
-
-
-# TODO - PG
-class Instructions(Node):
-    pass
-
-
-# TODO - PG
-class Instruction(Node):
-    pass
-
-
-# TODO - PG
-class PrintInstr(Node):
-    pass
-
-
-# TODO - PG
-class LabeledInstr(Node):
-    pass
-
-
-# TODO - PG
-class Assignment(Node):
-    pass
-
-
-# TODO - PG
-class ChoiceInstr(Node):
-    pass
-
-
-# TODO - PG
-class WhileInstr(Node):
-    pass
-
-
-# TODO - WB
-class RepeatInstr(Node):
-    pass
-
-
-# TODO - WB
-class ReturnInstr(Node):
-    pass
-
-
-# TODO - WB
-class ContinueInstr(Node):
-    pass
-
-
-# TODO - WB
-class BreakInstr(Node):
-    pass
-
-
-# TODO - WB
-class CompoundInstr(Node):
-    pass
-
-
-# TODO - WB
-class Condition(Node):
-    pass
-
-
-# TODO - WB
-class Expression(Node):
-    pass
-
-
-# TODO - WB
-class ExprListOrEmpty(Node):
-    pass
-
-
-# TODO - WB
-class ExprList(Node):
-    pass
-
-
-# TODO - WB
-class FundefsOpt(Node):
-    pass
-
-
-# TODO - WB
-class Fundefs(Node):
-    pass
-
-
-# TODO - WB
-class Fundef(Node):
-    pass
-
-
-# TODO - WB
-class ArgsListOrEmpty(Node):
-    pass
-
-
-# TODO - WB
-class ArgsList(Node):
-    pass
-
-
-# TODO - WB
-class Arg(Node):
-    pass
+    def __init__(self, identifier):
+        super().__init__()
+        self.identifier = identifier

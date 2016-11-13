@@ -1,7 +1,9 @@
-program -> program declarations
-program -> program fundefs_opt
-program -> program instructions_opt
-program -> <empty>
+program -> segments
+segments -> segments segment
+segments -> <empty>
+segment -> declarations
+segment -> fundefs_opt
+segment -> instructions_opt
 declarations -> declarations declaration
 declarations -> <empty>
 declaration -> TYPE inits ;
@@ -38,7 +40,11 @@ repeat_instr -> REPEAT instructions UNTIL condition ;
 return_instr -> RETURN expression ;
 continue_instr -> CONTINUE ;
 break_instr -> BREAK ;
-compound_instr -> { declarations instructions_opt }
+compound_instr -> { compound_segments }
+compound_segments -> compound_segments compound_segment
+compound_segments -> <empty>
+compound_segment -> declarations
+compound_segment -> instructions_opt
 condition -> expression
 const -> INTEGER
 const -> FLOAT
