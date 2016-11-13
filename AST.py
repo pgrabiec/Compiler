@@ -24,7 +24,8 @@ class Segments(Node):
 
 
 class Segment(Node):
-    pass
+    def __init__(self, content):
+        self.content = content
 
 
 class VariableInits(Segment):
@@ -50,6 +51,9 @@ class VariableInit(Node):
     def set_expression(self, expression):
         """:arg expression : AST.Expression"""
         self.expression = expression
+#
+# -----------------------------------
+#
 
 
 class FunctionDefinitions(Segment):
