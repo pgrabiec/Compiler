@@ -70,35 +70,6 @@ class Instructions(Node):
     def add_instruction(self, instruction):
         self.instructions.append(instruction)
 
-# ------------------------------
-
-class ReturnInstruction(Node):
-    def __init__(self):
-        self.expression = None
-
-    def set_expression(self, expression):
-        """:arg expression : AST.Expression"""
-        self.expression = expression
-
-
-class BreakInstruction(Node):
-    pass
-
-
-class ContinueInstruction(Node):
-    pass
-
-
-class ExpressionInstruction(Node):
-    """Matches: 'instruction -> expression ;'"""
-
-    def __init__(self):
-        self.expression = None
-
-    def set_expression(self, expression):
-        """:arg expression : AST.Expression"""
-        self.expression = expression
-
 
 class PrintInstruction(Node):
     def __init__(self):
@@ -121,6 +92,8 @@ class LabeledInstruction(Node):
     def set_instruction(self, instruction):
         """:arg instruction : AST.Instruction"""
         self.instruction = instruction
+
+# ------------------------------
 
 
 class Assignment(Node):
@@ -184,6 +157,23 @@ class RepeatInstruction(Node):
         self.instructions = instructions
 
 
+class ReturnInstruction(Node):
+    def __init__(self):
+        self.expression = None
+
+    def set_expression(self, expression):
+        """:arg expression : AST.Expression"""
+        self.expression = expression
+
+
+class BreakInstruction(Node):
+    pass
+
+
+class ContinueInstruction(Node):
+    pass
+
+
 class CompoundInstruction(Node):
     def __init__(self):
         self.instructions = None
@@ -207,6 +197,11 @@ class CompoundSegment(Node):
         self.content = content
 
 
+class Condition(Node):
+    def __init__(self, expression):
+        self.expression = expression
+
+
 class Const(Node):
     def __init__(self, value):
         self.value = value
@@ -224,61 +219,15 @@ class String(Const):
     pass
 
 
-class Condition(Node):
-    def __init__(self, expression):
+class Expression(Node):
+    """Matches: 'instruction -> expression ;'"""
+
+    def __init__(self):
+        self.expression = None
+
+    def set_expression(self, expression):
+        """:arg expression : AST.Expression"""
         self.expression = expression
-
-
-class Variable(Node):
-    """Matches ID terminals when they are associated with a variable
-        Also, matches the production: expression -> ID"""
-
-    def __init__(self):
-        self.identifier = None
-
-    def set_identifier(self, identifier):
-        """:arg identifier : string"""
-        self.identifier = identifier
-
-
-class BinExpr(Node):
-    def __init__(self):
-        self.op = None
-        self.left = None
-        self.right = None
-
-    def set_op(self, op):
-        """:arg op : string"""
-        self.op = op
-
-    def set_left(self, left):
-        """:arg left : AST.Expression"""
-        self.left = left
-
-    def set_reght(self, right):
-        """:arg right : AST.Expression"""
-        self.left = right
-
-
-class BracketExpression(Node):
-    """Matches production expression -> ( expression )"""
-
-    def __init__(self, expression):
-        self.expression = expression
-
-
-class FunctionCallExpression(Node):
-    def __init__(self):
-        self.identifier = None
-        self.arguments = None
-
-    def set_identifier(self, identifier):
-        """:arg identifier : string"""
-        self.identifier = identifier
-
-    def set_arguments(self, arguments):
-        """:arg arguments : AST.ExpressionList"""
-        self.arguments = arguments
 
 
 class ExpressionList(Node):
@@ -344,3 +293,61 @@ class Argument(Node):
     def set_argument_identifier(self, argument_identifier):
         """:arg argument_identifier : string"""
         self.argument_identifier = argument_identifier
+
+
+
+
+
+
+
+
+class Variable(Node):
+    """Matches ID terminals when they are associated with a variable
+        Also, matches the production: expression -> ID"""
+
+    def __init__(self):
+        self.identifier = None
+
+    def set_identifier(self, identifier):
+        """:arg identifier : string"""
+        self.identifier = identifier
+
+
+class BinExpr(Node):
+    def __init__(self):
+        self.op = None
+        self.left = None
+        self.right = None
+
+    def set_op(self, op):
+        """:arg op : string"""
+        self.op = op
+
+    def set_left(self, left):
+        """:arg left : AST.Expression"""
+        self.left = left
+
+    def set_reght(self, right):
+        """:arg right : AST.Expression"""
+        self.left = right
+
+
+class BracketExpression(Node):
+    """Matches production expression -> ( expression )"""
+
+    def __init__(self, expression):
+        self.expression = expression
+
+
+class FunctionCallExpression(Node):
+    def __init__(self):
+        self.identifier = None
+        self.arguments = None
+
+    def set_identifier(self, identifier):
+        """:arg identifier : string"""
+        self.identifier = identifier
+
+    def set_arguments(self, arguments):
+        """:arg arguments : AST.ExpressionList"""
+        self.arguments = arguments

@@ -42,7 +42,7 @@ class Cparser(object):
 
     def p_segments(self, p):
         """segments : segments segment
-                   | """
+                    | """
         if len(p) == 3:
             if p[1] is None:
                 p[0] = ast.Segments()
@@ -125,16 +125,20 @@ class Cparser(object):
                        | expression ';' """
         p[0] = p[1]
 
-# ------------------------------
-
-    # TODO
     def p_print_instruction(self, p):
         """print_instruction : PRINT expr_list ';'
-                       | PRINT error ';' """
+                             | PRINT error ';' """
+        if len(p) == 4:
+            p[0] = ast.PrintInstruction()
+            p[0].set_args(p[2])
 
-    # TODO
     def p_labeled_instruction(self, p):
         """labeled_instruction : ID ':' instruction """
+        p[0] = ast.LabeledInstruction()
+        p[0].set_identifier(p[1])
+        p[0].set_instruction(p[3])
+
+# ------------------------------
 
     # TODO
     def p_assignment(self, p):
@@ -143,14 +147,14 @@ class Cparser(object):
     # TODO
     def p_choice_instruction(self, p):
         """choice_instruction : IF '(' condition ')' instruction  %prec IFX
-                                | IF '(' condition ')' instruction ELSE instruction
-                                | IF '(' error ')' instruction  %prec IFX
-                                | IF '(' error ')' instruction ELSE instruction """
+                              | IF '(' condition ')' instruction ELSE instruction
+                              | IF '(' error ')' instruction  %prec IFX
+                              | IF '(' error ')' instruction ELSE instruction """
 
     # TODO
     def p_while_instruction(self, p):
         """while_instruction : WHILE '(' condition ')' instruction
-                       | WHILE '(' error ')' instruction """
+                             | WHILE '(' error ')' instruction """
 
     # TODO
     def p_repeat_instruction(self, p):
@@ -179,7 +183,7 @@ class Cparser(object):
     # TODO
     def p_compound_segment(self, p):
         """compound_segment : declarations
-                             | instructions_opt """
+                            | instructions_opt """
 
     # TODO
     def p_condition(self, p):
@@ -227,14 +231,6 @@ class Cparser(object):
     def p_expr_list(self, p):
         """expr_list : expr_list ',' expression
                      | expression """
-
-
-
-
-
-
-
-
 
     # TODO
     def p_fundefs_opt(self, p):
