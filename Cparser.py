@@ -307,7 +307,7 @@ class Cparser(object):
             p[0].add_function_definition(p[1])
 
     def p_fundef(self, p):
-        """fundef : TYPE ID '(' args_list_or_empty ')' compound_instr """
+        """fundef : TYPE ID '(' args_list_or_empty ')' compound_instruction """
         if len(p) == 7:
             p[0] = ast.FunctionDefinition()
             p[0].set_type(p[1])
