@@ -9,6 +9,10 @@ def addToClass(cls):
 
 
 class TreePrinter:
+    @addToClass(AST.Node)
+    def printTree(self, indent=0):
+        raise Exception("printTree is not defined in class " + self.__class__.__name__)
+
     @addToClass(AST.Program)
     def printTree(self, space=0):
         return self.segments.printTree(space)
@@ -59,7 +63,7 @@ class TreePrinter:
     @addToClass(AST.Assignment)
     def printTree(self, space=0):
         return ("| " * space + "=\n" +
-                "| " * (space + 1) + str(self.variable) + "\n" +
+                self.variable.printTree(space + 1) +
                 self.expression.printTree(space + 1))
 
     @addToClass(AST.ChoiceInstruction)
@@ -105,44 +109,21 @@ class TreePrinter:
         else:
             return self.instructions.printTree(space + 1)
 
-    # TODO -------- Is it Correct Now ? --------
     @addToClass(AST.CompoundSegments)
     def printTree(self, space):
         return "".join(map(lambda e: e.printTree(space), self.segments))
 
-    # TODO -------- IS IT NECESSARY ??? --------
     @addToClass(AST.CompoundSegment)
     def printTree(self, space):
-        pass
+        return self.content.printTree(space)
 
-    # TODO -------- IS IT NECESSARY ??? --------
     @addToClass(AST.Condition)
     def printTree(self, space):
-        pass
+        return self.expression.printTree(space)
 
     @addToClass(AST.Const)
     def printTree(self, space):
-        return ("| " * space + str(self.value) + "\n")
-
-    # TODO --------  REMOVE IT ??? --------
-    @addToClass(AST.Integer)
-    def printTree(self, space):
-        pass
-
-    # TODO --------  REMOVE IT ??? --------
-    @addToClass(AST.Float)
-    def printTree(self, space):
-        pass
-
-    # TODO --------  REMOVE IT ??? --------
-    @addToClass(AST.String)
-    def printTree(self, space):
-        pass
-
-    # TODO -------- IS IT NECESSARY ??? --------
-    @addToClass(AST.Expression)
-    def printTree(self, space):
-        pass
+        return "|" * space + str(self.value) + "\n"
 
     @addToClass(AST.BinExpr)
     def printTree(self, space=0):
@@ -183,9 +164,9 @@ class TreePrinter:
 
     @addToClass(AST.Argument)
     def printTree(self, space=0):
-        return "| " * space + "ARG " + self.argument_identifier + "\n"
+        return "| " * space + "ARG " + str(self.argument_identifier) + "\n"
 
     # TODO -------- IS IT NECESSARY ??? --------
     @addToClass(AST.Variable)
     def printTree(self, space):
-        pass
+        return "| " * space + str(self.identifier) + "\n"

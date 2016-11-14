@@ -220,17 +220,6 @@ class String(Const):
     pass
 
 
-class Expression(Node):
-    """Matches: 'instruction -> expression ;'"""
-
-    def __init__(self):
-        self.expression = None
-
-    def set_expression(self, expression):
-        """:arg expression : AST.Expression"""
-        self.expression = expression
-
-
 class BinExpr(Node):
     def __init__(self):
         self.op = None

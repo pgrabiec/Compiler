@@ -40,6 +40,8 @@ class Cparser(object):
             program = ast.Program()
             program.set_segments(segments=segments)
             p[0] = program
+        else:
+            raise Exception
 
     def p_segments(self, p):
         """segments : segments segment
@@ -126,6 +128,7 @@ class Cparser(object):
 
     def p_assignment(self, p):
         """assignment : ID '=' expression ';' """
+        print("Assignment: >>" + str(p[1]) + "<<>>" + str(p[3]) + "<<")
         if len(p) == 5:
             variable = ast.Variable()
             variable.set_identifier(p[1])
@@ -207,6 +210,7 @@ class Cparser(object):
         """const : INTEGER
                  | FLOAT
                  | STRING"""
+        print("Const: " + str(p[1]))
         if len(p) == 2:
             p[0] = ast.Const(p[1])
 
@@ -257,6 +261,7 @@ class Cparser(object):
             p[0] = p[1]
         else:
             p[0] = ast.ExpressionList()
+        print("Expr list: >>" + str(p[1]) + "<<")
 
     def p_expr_list(self, p):
         """expr_list : expr_list ',' expression
