@@ -1,18 +1,14 @@
 program -> segments
 segments -> segments segment
 segments -> <empty>
-segment -> declarations
-segment -> fundefs_opt
-segment -> instructions_opt
-    declarations -> declarations declaration
-    declarations -> <empty>
+segment -> declaration
+segment -> fundef
+segment -> instruction
         declaration -> TYPE inits ;
         declaration -> error ;
         inits -> inits , init
         inits -> init
         init -> ID = expression
-    instructions_opt -> instructions
-    instructions_opt -> <empty>
         instructions -> instructions instruction
         instructions -> instruction
         instruction -> print_instr
@@ -43,8 +39,8 @@ segment -> instructions_opt
             compound_instruction-> { compound_segments }
                 compound_segments -> compound_segments compound_segment
                 compound_segments -> <empty>
-                compound_segment -> declarations
-                compound_segment -> instructions_opt
+                compound_segment -> declaration
+                compound_segment -> instruction
             condition -> expression
             const -> INTEGER
             const -> FLOAT
@@ -77,10 +73,6 @@ segment -> instructions_opt
                 expr_list_or_empty -> <empty>
                 expr_list -> expr_list , expression
                 expr_list -> expression
-    fundefs_opt -> fundefs
-    fundefs_opt -> <empty>
-        fundefs -> fundefs fundef
-        fundefs -> fundef
         fundef -> TYPE ID ( args_list_or_empty ) compound_instruction
             args_list_or_empty -> args_list
             args_list_or_empty -> <empty>

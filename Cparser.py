@@ -1,5 +1,6 @@
 import AST as ast
 from scanner import Scanner
+import TreePrinter
 
 
 class Cparser(object):
@@ -33,7 +34,7 @@ class Cparser(object):
             print("Unexpected end of input")
 
     def p_program(self, p):
-        """program : segments """
+        """program : segments"""
         if len(p) == 2:
             segments = p[1]
             program = ast.Program()
@@ -50,28 +51,15 @@ class Cparser(object):
             else:
                 p[0] = p[1]
                 p[0].add_segment(p[2])
-        else:
+        elif len(p) == 1:
             p[0] = ast.Segments()
 
     def p_segment(self, p):
-        """segment : declarations
-                   | fundefs_opt
-                   | instructions_opt """
+        """segment : declaration
+                   | fundef
+                   | instruction """
         if len(p) == 2:
             p[0] = ast.Segment(p[1])
-
-    def p_declarations(self, p):
-        """declarations : declarations declaration
-                        | """
-        if len(p) == 3:
-            if p[1] is None:
-                p[0] = ast.Declarations()
-                p[0].add_declaration(p[2])
-            else:
-                p[0] = p[1]
-                p[0].add_declaration(p[2])
-        elif len(p) == 1:
-            p[0] = ast.Declarations()
 
     def p_declaration(self, p):
         """declaration : TYPE inits ';'
@@ -97,14 +85,6 @@ class Cparser(object):
             variable.set_identifier(p[1])
             p[0].set_variable(variable=variable)
             p[0].set_expression(p[3])
-
-    def p_instructions_opt(self, p):
-        """instructions_opt : instructions
-                            | """
-        if len(p) == 2:
-            p[0] = p[1]
-        elif len(p) == 1:
-            p[0] = ast.Instructions()
 
     def p_instructions(self, p):
         """instructions : instructions instruction
@@ -213,8 +193,8 @@ class Cparser(object):
             p[0] = ast.CompoundSegments()
 
     def p_compound_segment(self, p):
-        """compound_segment : declarations
-                            | instructions_opt """
+        """compound_segment : declaration
+                            | instruction """
         if len(p) == 2:
             p[0] = ast.CompoundSegment(p[1])
 
@@ -287,24 +267,6 @@ class Cparser(object):
         elif len(p) == 2:
             p[0] = ast.ExpressionList()
             p[0].add_expression(p[1])
-
-    def p_fundefs_opt(self, p):
-        """fundefs_opt : fundefs
-                       | """
-        if len(p) == 2:
-            p[0] = p[1]
-        elif len(p) == 1:
-            p[0] = ast.FunctionDefinitions()
-
-    def p_fundefs(self, p):
-        """fundefs : fundefs fundef
-                   | fundef """
-        if len(p) == 3:
-            p[0] = p[1]
-            p[0].add_function_definition(p[2])
-        elif len(p) == 2:
-            p[0] = ast.FunctionDefinitions()
-            p[0].add_function_definition(p[1])
 
     def p_fundef(self, p):
         """fundef : TYPE ID '(' args_list_or_empty ')' compound_instruction """

@@ -1,6 +1,6 @@
 class Node(object):
     def __str__(self):
-        return self.printTree()
+        return self.printTree(0)
 
 
 class Program(Node):
