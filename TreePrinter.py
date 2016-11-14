@@ -10,177 +10,183 @@ def addToClass(cls):
 
 
 class TreePrinter:
-    # TODO - PG
     @addToClass(AST.Program)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return self.segments.printTree(space)
 
-    # TODO - PG
     @addToClass(AST.Segments)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return "".join(map(lambda e: e.printTree(space), self.segments))
 
-    # TODO - PG
     @addToClass(AST.Segment)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return self.content.printTree(space)
 
-    # TODO - PG
+    # TODO -------- IS IT NECESSARY ??? --------
     @addToClass(AST.Declarations)
-    def printTree(self, indent):
+    def printTree(self, space):
         pass
 
-    # TODO - PG
     @addToClass(AST.Declaration)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return ("| " * space + "DECL\n" +
+                self.inits.printTree(space + 1))
 
-    # TODO - PG
     @addToClass(AST.Inits)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return "".join(map(lambda e: e.printTree(space), self.inits))
 
-    # TODO - PG
     @addToClass(AST.Init)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return ("| " * space + "=\n" +
+                "| " * (space + 1) + str(self.variable) + "\n" +
+                self.expression.printTree(space + 1))
 
-    # TODO - PG
     @addToClass(AST.Instructions)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return "".join(map(lambda e: e.printTree(space), self.instructions))
 
-    # TODO - PG
     @addToClass(AST.PrintInstruction)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return ("| " * space + "PRINT\n" +
+                self.args.printTree(space))
 
-    # TODO - PG
     @addToClass(AST.LabeledInstruction)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return ("| " * space + "LABEL\n" +
+                "| " * (space + 1) + str(self.identifier) + "\n" +
+                self.instruction.printTree(space))
 
-    # TODO - PG
     @addToClass(AST.Assignment)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return ("| " * space + "=\n" +
+                "| " * (space + 1) + str(self.variable) + "\n" +
+                self.expression.printTree(space + 1))
 
-    # TODO - PG
     @addToClass(AST.ChoiceInstruction)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        if self.instruction_false is None:
+            return ("| " * space + "IF\n" +
+                    self.condition.printTree(space + 1) + self.instruction_true.printTree(space + 1))
+        else:
+            return ("| " * space + "IF\n" +
+                    self.condition.printTree(space + 1) + self.instruction_true.printTree(space + 1) +
+                    "| " * space + "ELSE\n" +
+                    self.instruction_false.printTree(space + 1))
 
-    # TODO - PG
     @addToClass(AST.WhileInstruction)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return ("| " * space + "WHILE\n" +
+                self.condition.printTree(space + 1) + self.instruction.printTree(space))
 
-    # TODO - PG
     @addToClass(AST.RepeatInstruction)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return ("| " * space + "REPEAT\n" +
+                self.instructions.printTree(space) +
+                "| " * (space + 1) + "UNTIL\n" +
+                self.condition.printTree(space + 2))
 
-    # TODO - PG
     @addToClass(AST.ReturnInstruction)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return ("| " * space + "RETURN\n" +
+                self.expression.printTree(space + 1))
 
-    # TODO - PG
     @addToClass(AST.BreakInstruction)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return "| " * space + "BREAK\n"
 
-    # TODO - PG
     @addToClass(AST.ContinueInstruction)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return "| " * space + "CONTINUE\n"
 
-    # TODO - PG
     @addToClass(AST.CompoundInstruction)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        if self.instructions is None:
+            return ""
+        else:
+            return self.instructions.printTree(space + 1)
 
-    # TODO - PG
+    # TODO -------- IS IT NECESSARY ??? --------
     @addToClass(AST.CompoundSegments)
-    def printTree(self, indent):
+    def printTree(self, space):
         pass
 
-    # TODO - WB
+    # TODO -------- IS IT NECESSARY ??? --------
     @addToClass(AST.CompoundSegment)
-    def printTree(self, indent):
+    def printTree(self, space):
         pass
 
-    # TODO - WB
+    # TODO -------- IS IT NECESSARY ??? --------
     @addToClass(AST.Condition)
-    def printTree(self, indent):
+    def printTree(self, space):
         pass
 
-    # TODO - WB
     @addToClass(AST.Const)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space):
+        return ("| " * space + str(self.value) + "\n")
 
-    # TODO - WB
+    # TODO --------  REMOVE IT ??? --------
     @addToClass(AST.Integer)
-    def printTree(self, indent):
+    def printTree(self, space):
         pass
 
-    # TODO - WB
+    # TODO --------  REMOVE IT ??? --------
     @addToClass(AST.Float)
-    def printTree(self, indent):
+    def printTree(self, space):
         pass
 
-    # TODO - WB
+    # TODO --------  REMOVE IT ??? --------
     @addToClass(AST.String)
-    def printTree(self, indent):
+    def printTree(self, space):
         pass
 
-    # TODO - PG
+    # TODO -------- IS IT NECESSARY ??? --------
     @addToClass(AST.Expression)
-    def printTree(self, indent):
+    def printTree(self, space):
         pass
 
-    # TODO - WB
     @addToClass(AST.BinExpr)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return ("| " * space + self.op + "\n" +
+                self.left.printTree(space + 1) +
+                self.right.printTree(space + 1))
 
-    # TODO - WB
     @addToClass(AST.BracketExpression)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return self.expression.printTree(space)
 
-    # TODO - WB
     @addToClass(AST.FunctionCallExpression)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space):
+        return ("| " * space + "FUNCALL\n" +
+                "| " * (space + 1) + str(self.identifier) + "\n" +
+                self.arguments.printTree(space + 1))
 
-    # TODO - WB
     @addToClass(AST.ExpressionList)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return "".join(map(lambda e: e.printTree(space + 1), self.expressions))
 
-    # TODO - WB
+    # TODO -------- IS IT NECESSARY ??? --------
     @addToClass(AST.FunctionDefinitions)
-    def printTree(self, indent):
+    def printTree(self, space):
         pass
 
-    # TODO - WB
     @addToClass(AST.FunctionDefinition)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return ("| " * space + "FUNDEF\n" +
+                "| " * (space + 1) + str(self.identifier) + "\n" +
+                "| " * (space + 2) + "RET " + str(self.type) + "\n" +
+                self.arguments.printTree(space + 1) +
+                self.instructions.printTree(space))
 
-    # TODO - WB
     @addToClass(AST.ArgumentsList)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return "".join(map(lambda e: e.printTree(space + 1), self.arguments))
 
-    # TODO - WB
     @addToClass(AST.Argument)
-    def printTree(self, indent):
-        pass
+    def printTree(self, space=0):
+        return "| " * space + "ARG " + self.argument_identifier + "\n"
 
-    # TODO - WB
+    # TODO -------- IS IT NECESSARY ??? --------
     @addToClass(AST.Variable)
-    def printTree(self, indent):
+    def printTree(self, space):
         pass
