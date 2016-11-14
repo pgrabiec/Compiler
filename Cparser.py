@@ -55,6 +55,8 @@ class Cparser(object):
                 p[0].add_segment(p[2])
         elif len(p) == 1:
             p[0] = ast.Segments()
+        else:
+            raise Exception
 
     def p_segment(self, p):
         """segment : declaration
@@ -62,12 +64,18 @@ class Cparser(object):
                    | instruction """
         if len(p) == 2:
             p[0] = ast.Segment(p[1])
+        else:
+            raise Exception
+        if p[1] is None:
+            raise Exception
 
     def p_declaration(self, p):
         """declaration : TYPE inits ';'
                        | error ';' """
         if len(p) == 4:
             p[0] = ast.Declaration(p[1], p[2])
+        else:
+            raise Exception
 
     def p_inits(self, p):
         """inits : inits ',' init
@@ -78,6 +86,8 @@ class Cparser(object):
         elif len(p) == 2:
             p[0] = ast.Inits()
             p[0].add_init(p[1])
+        else:
+            raise Exception
 
     def p_init(self, p):
         """init : ID '=' expression """
@@ -209,7 +219,7 @@ class Cparser(object):
     def p_const(self, p):
         """const : INTEGER
                  | FLOAT
-                 | STRING"""
+                 | STRING """
         print("Const: " + str(p[1]))
         if len(p) == 2:
             p[0] = ast.Const(p[1])
@@ -241,7 +251,7 @@ class Cparser(object):
                       | ID '(' error ')' """
         if len(p) == 2:
                 p[0] = ast.Const(p[1])
-        elif len(p) == 3:
+        elif len(p) == 4:
             if p[1] == '(':
                 p[0] = ast.BracketExpression(p[2])
             else:
@@ -249,7 +259,7 @@ class Cparser(object):
                 p[0].set_op(p[2])
                 p[0].set_left(p[1])
                 p[0].set_right(p[3])
-        elif len(p) == 4:
+        elif len(p) == 5:
             p[0] = ast.FunctionCallExpression()
             p[0].set_identifier(p[1])
             p[0].set_arguments(p[3])
@@ -261,7 +271,6 @@ class Cparser(object):
             p[0] = p[1]
         else:
             p[0] = ast.ExpressionList()
-        print("Expr list: >>" + str(p[1]) + "<<")
 
     def p_expr_list(self, p):
         """expr_list : expr_list ',' expression
@@ -272,6 +281,8 @@ class Cparser(object):
         elif len(p) == 2:
             p[0] = ast.ExpressionList()
             p[0].add_expression(p[1])
+        else:
+            raise Exception
 
     def p_fundef(self, p):
         """fundef : TYPE ID '(' args_list_or_empty ')' compound_instruction """
@@ -281,6 +292,8 @@ class Cparser(object):
             p[0].set_identifier(p[2])
             p[0].set_arguments(p[4])
             p[0].set_instructions(p[6])
+        else:
+            raise Exception
 
     def p_args_list_or_empty(self, p):
         """args_list_or_empty : args_list

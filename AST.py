@@ -234,7 +234,7 @@ class BinExpr(Node):
         """:arg left : AST.Expression"""
         self.left = left
 
-    def set_reght(self, right):
+    def set_right(self, right):
         """:arg right : AST.Expression"""
         self.left = right
 
