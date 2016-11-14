@@ -336,7 +336,6 @@ class Argument(Node):
         self.argument_identifier = argument_identifier
 
 
-# TODO --- What to do with this ? ---
 class Variable(Node):
     """Matches ID terminals when they are associated with a variable
         Also, matches the production: expression -> ID"""
