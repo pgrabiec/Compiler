@@ -22,10 +22,10 @@ class TreePrinter:
     def printTree(self, space=0):
         return self.content.printTree(space)
 
-    # TODO -------- IS IT NECESSARY ??? --------
+    # TODO -------- Is it Correct Now ? --------
     @addToClass(AST.Declarations)
     def printTree(self, space):
-        pass
+        return "".join(map(lambda e: e.printTree(space), self.declarations))
 
     @addToClass(AST.Declaration)
     def printTree(self, space=0):
@@ -106,10 +106,10 @@ class TreePrinter:
         else:
             return self.instructions.printTree(space + 1)
 
-    # TODO -------- IS IT NECESSARY ??? --------
+    # TODO -------- Is it Correct Now ? --------
     @addToClass(AST.CompoundSegments)
     def printTree(self, space):
-        pass
+        return "".join(map(lambda e: e.printTree(space), self.segments))
 
     # TODO -------- IS IT NECESSARY ??? --------
     @addToClass(AST.CompoundSegment)
@@ -165,10 +165,10 @@ class TreePrinter:
     def printTree(self, space=0):
         return "".join(map(lambda e: e.printTree(space + 1), self.expressions))
 
-    # TODO -------- IS IT NECESSARY ??? --------
+    # TODO -------- Is it Correct Now ? --------
     @addToClass(AST.FunctionDefinitions)
     def printTree(self, space):
-        pass
+        return "".join(map(lambda e: e.printTree(space), self.function_definitions))
 
     @addToClass(AST.FunctionDefinition)
     def printTree(self, space=0):
