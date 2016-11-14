@@ -255,6 +255,7 @@ class Cparser(object):
             if p[1] == '(':
                 p[0] = ast.BracketExpression(p[2])
             else:
+                print("BinExpr:>>" + str(p[1]) + ">>" + str(p[2]) + ">>" + str(p[3]) + "<<")
                 p[0] = ast.BinExpr()
                 p[0].set_op(p[2])
                 p[0].set_left(p[1])
@@ -263,6 +264,8 @@ class Cparser(object):
             p[0] = ast.FunctionCallExpression()
             p[0].set_identifier(p[1])
             p[0].set_arguments(p[3])
+        else:
+            raise Exception
 
     def p_expr_list_or_empty(self, p):
         """expr_list_or_empty : expr_list

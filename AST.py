@@ -4,9 +4,6 @@ class Node(object):
 
 
 class Program(Node):
-    def __init__(self):
-        self.segments = None
-
     def set_segments(self, segments):
         """:arg segments : AST.Segments"""
         self.segments = segments
@@ -50,10 +47,6 @@ class Inits(Node):
 
 
 class Init(Node):
-    def __init__(self):
-        self.variable = None
-        self.expression = None
-
     def set_variable(self, variable):
         """:arg variable : AST.Variable"""
         self.variable = variable
@@ -72,19 +65,12 @@ class Instructions(Node):
 
 
 class PrintInstruction(Node):
-    def __init__(self):
-        self.args = None
-
     def set_args(self, args):
         """:arg args : AST.ExpressionList"""
         self.args = args
 
 
 class LabeledInstruction(Node):
-    def __init__(self):
-        self.identifier = None
-        self.instruction = None
-
     def set_identifier(self, identifier):
         """:arg identifier : string"""
         self.identifier = identifier
@@ -95,10 +81,6 @@ class LabeledInstruction(Node):
 
 
 class Assignment(Node):
-    def __init__(self):
-        self.variable = None
-        self.expression = None
-
     def set_variable(self, variable):
         """:arg variable : AST.Variable"""
         self.variable = variable
@@ -109,11 +91,6 @@ class Assignment(Node):
 
 
 class ChoiceInstruction(Node):
-    def __init__(self):
-        self.condition = None
-        self.instruction_true = None
-        self.instruction_false = None
-
     def set_condition(self, condition):
         """:arg condition : AST.Expression"""
         self.condition = condition
@@ -128,10 +105,6 @@ class ChoiceInstruction(Node):
 
 
 class WhileInstruction(Node):
-    def __init__(self):
-        self.condition = None
-        self.instruction = None
-
     def set_condition(self, condition):
         """:arg condition : AST.Expression"""
         self.condition = condition
@@ -142,10 +115,6 @@ class WhileInstruction(Node):
 
 
 class RepeatInstruction(Node):
-    def __init__(self):
-        self.condition = None
-        self.instructions = None
-
     def set_condition(self, condition):
         """:arg condition : AST.Expression"""
         self.condition = condition
@@ -156,9 +125,6 @@ class RepeatInstruction(Node):
 
 
 class ReturnInstruction(Node):
-    def __init__(self):
-        self.expression = None
-
     def set_expression(self, expression):
         """:arg expression : AST.Expression"""
         self.expression = expression
@@ -173,9 +139,6 @@ class ContinueInstruction(Node):
 
 
 class CompoundInstruction(Node):
-    def __init__(self):
-        self.instructions = None
-
     def set_instructions(self, instructions):
         """:arg instructions : AST.CompoundSegments"""
         self.instructions = instructions
@@ -221,11 +184,6 @@ class String(Const):
 
 
 class BinExpr(Node):
-    def __init__(self):
-        self.op = None
-        self.left = None
-        self.right = None
-
     def set_op(self, op):
         """:arg op : string"""
         self.op = op
@@ -236,7 +194,7 @@ class BinExpr(Node):
 
     def set_right(self, right):
         """:arg right : AST.Expression"""
-        self.left = right
+        self.right = right
 
 
 class BracketExpression(Node):
@@ -247,10 +205,6 @@ class BracketExpression(Node):
 
 
 class FunctionCallExpression(Node):
-    def __init__(self):
-        self.identifier = None
-        self.arguments = None
-
     def set_identifier(self, identifier):
         """:arg identifier : string"""
         self.identifier = identifier
@@ -279,12 +233,6 @@ class FunctionDefinitions(Node):
 
 
 class FunctionDefinition(Node):
-    def __init__(self):
-        self.type = None
-        self.identifier = None
-        self.arguments = None
-        self.instructions = None
-
     def set_type(self, type):
         """:arg type : string"""
         self.type = type
@@ -312,10 +260,6 @@ class ArgumentsList(Node):
 
 
 class Argument(Node):
-    def __init__(self):
-        self.argument_type = None
-        self.argument_identifier = None
-
     def set_argument_type(self, argument_type):
         """:arg argument_type : string"""
         self.argument_type = argument_type
@@ -328,10 +272,6 @@ class Argument(Node):
 class Variable(Node):
     """Matches ID terminals when they are associated with a variable
         Also, matches the production: expression -> ID"""
-
-    def __init__(self):
-        self.identifier = None
-
     def set_identifier(self, identifier):
         """:arg identifier : string"""
         self.identifier = identifier
