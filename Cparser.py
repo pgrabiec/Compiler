@@ -253,42 +253,76 @@ class Cparser(object):
             p[0].set_identifier(p[1])
             p[0].set_arguments(p[3])
 
-# ------------------------------
-
-    # TODO
     def p_expr_list_or_empty(self, p):
         """expr_list_or_empty : expr_list
                               | """
+        if len(p) == 2:
+            p[0] = p[1]
+        else:
+            p[0] = None
 
-    # TODO
     def p_expr_list(self, p):
         """expr_list : expr_list ',' expression
                      | expression """
+        if len(p) == 4:
+            if p[1] is None:
+                p[0] = ast.ExpressionList()
+            else:
+                p[0] = p[1]
+            p[0].add_expression(p[3])
+        elif len(p) == 2:
+            p[0] = ast.ExpressionList()
+            p[0].add_expression(p[1])
 
-    # TODO
-    def p_fundefs_opt(self, p):
-        """fundefs_opt : fundefs
-                       | """
+    # # TODO
+    # def p_fundefs_opt(self, p):
+    #     """fundefs_opt : fundefs
+    #                    | """
 
-    # TODO
     def p_fundefs(self, p):
         """fundefs : fundefs fundef
                    | fundef """
+        if len(p) == 3:
+            if p[1] is None:
+                p[0] = ast.FunctionDefinitions()
+            else:
+                p[0] = p[1]
+            p[0].add_function_definition(p[2])
+        else:
+            p[0] = ast.FunctionDefinitions()
+            p[0].add_function_definition(p[1])
 
-    # TODO
     def p_fundef(self, p):
         """fundef : TYPE ID '(' args_list_or_empty ')' compound_instr """
+        p[0] = ast.FunctionDefinition()
+        p[0].set_type(p[1])
+        p[0].set_identifier(p[2])
+        p[0].set_arguments(p[4])
+        p[0].set_instructions(p[6])
 
-    # TODO
     def p_args_list_or_empty(self, p):
         """args_list_or_empty : args_list
                               | """
+        if len(p) == 2:
+            p[0] = p[1]
+        elif len(p) == 1:
+            p[0] = None
 
-    # TODO
     def p_args_list(self, p):
         """args_list : args_list ',' arg
                      | arg """
+        if len(p) == 4:
+            if p[1] is None:
+                p[0] = ast.ArgumentsList()
+            else:
+                p[0] = p[1]
+            p[0].add_argument(p[3])
+        elif len(p) == 2:
+            p[0] = ast.ArgumentsList()
+            p[0].add_argument(p[1])
 
-    # TODO
     def p_arg(self, p):
         """arg : TYPE ID """
+        p[0] = ast.Argument()
+        p[0].set_argument_type(p[1])
+        p[0].set_argument_identifier(p[2])
