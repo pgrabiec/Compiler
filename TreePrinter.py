@@ -1,7 +1,6 @@
 import AST as AST
 
 
-
 def addToClass(cls):
     def decorator(func):
         setattr(cls, func.__name__, func)
@@ -52,26 +51,6 @@ class TreePrinter:
         pass
 
     # TODO - PG
-    @addToClass(AST.ReturnInstruction)
-    def printTree(self, indent):
-        pass
-
-    # TODO - PG
-    @addToClass(AST.BreakInstruction)
-    def printTree(self, indent):
-        pass
-
-    # TODO - PG
-    @addToClass(AST.ContinueInstruction)
-    def printTree(self, indent):
-        pass
-
-    # TODO - PG
-    @addToClass(AST.ExpressionInstruction)
-    def printTree(self, indent):
-        pass
-
-    # TODO - PG
     @addToClass(AST.PrintInstruction)
     def printTree(self, indent):
         pass
@@ -102,6 +81,21 @@ class TreePrinter:
         pass
 
     # TODO - PG
+    @addToClass(AST.ReturnInstruction)
+    def printTree(self, indent):
+        pass
+
+    # TODO - PG
+    @addToClass(AST.BreakInstruction)
+    def printTree(self, indent):
+        pass
+
+    # TODO - PG
+    @addToClass(AST.ContinueInstruction)
+    def printTree(self, indent):
+        pass
+
+    # TODO - PG
     @addToClass(AST.CompoundInstruction)
     def printTree(self, indent):
         pass
@@ -113,6 +107,11 @@ class TreePrinter:
 
     # TODO - WB
     @addToClass(AST.CompoundSegment)
+    def printTree(self, indent):
+        pass
+
+    # TODO - WB
+    @addToClass(AST.Condition)
     def printTree(self, indent):
         pass
 
@@ -136,13 +135,8 @@ class TreePrinter:
     def printTree(self, indent):
         pass
 
-    # TODO - WB
-    @addToClass(AST.Condition)
-    def printTree(self, indent):
-        pass
-
-    # TODO - WB
-    @addToClass(AST.Variable)
+    # TODO - PG
+    @addToClass(AST.Expression)
     def printTree(self, indent):
         pass
 
@@ -183,5 +177,10 @@ class TreePrinter:
 
     # TODO - WB
     @addToClass(AST.Argument)
+    def printTree(self, indent):
+        pass
+
+    # TODO - WB
+    @addToClass(AST.Variable)
     def printTree(self, indent):
         pass
