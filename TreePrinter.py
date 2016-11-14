@@ -1,4 +1,5 @@
-import AST
+import AST as AST
+
 
 
 def addToClass(cls):
@@ -10,175 +11,177 @@ def addToClass(cls):
 
 
 class TreePrinter:
-    @addToClass(AST.Node)
-    def printTree(self):
-        raise Exception("printTree not defined in class " + self.__class__.__name__)
-
-    @addToClass(AST.BinExpr)
-    def printTree(self):
-        raise Exception("printTree not defined in class " + self.__class__.__name__)
-
-    # TODO - PG
-    @addToClass(AST.Const)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
-
-    # TODO - PG
-    @addToClass(AST.Integer)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
-
-    # TODO - PG
-    @addToClass(AST.Float)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
-
-    # TODO - PG
-    @addToClass(AST.String)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
-
-    # TODO - PG
-    @addToClass(AST.Variable)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
-
     # TODO - PG
     @addToClass(AST.Program)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    def printTree(self, indent):
+        pass
+
+    # TODO - PG
+    @addToClass(AST.Segments)
+    def printTree(self, indent):
+        pass
+
+    # TODO - PG
+    @addToClass(AST.Segment)
+    def printTree(self, indent):
+        pass
 
     # TODO - PG
     @addToClass(AST.Declarations)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    def printTree(self, indent):
+        pass
 
     # TODO - PG
-    @addToClass(AST.Init)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.Declaration)
+    def printTree(self, indent):
+        pass
 
     # TODO - PG
     @addToClass(AST.Inits)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    def printTree(self, indent):
+        pass
 
     # TODO - PG
     @addToClass(AST.Init)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
-
-    # TODO - PG
-    @addToClass(AST.InstructionsOpt)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    def printTree(self, indent):
+        pass
 
     # TODO - PG
     @addToClass(AST.Instructions)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    def printTree(self, indent):
+        pass
 
     # TODO - PG
-    @addToClass(AST.Instruction)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.ReturnInstruction)
+    def printTree(self, indent):
+        pass
 
     # TODO - PG
-    @addToClass(AST.PrintInstr)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.BreakInstruction)
+    def printTree(self, indent):
+        pass
 
     # TODO - PG
-    @addToClass(AST.LabeledInstr)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.ContinueInstruction)
+    def printTree(self, indent):
+        pass
+
+    # TODO - PG
+    @addToClass(AST.ExpressionInstruction)
+    def printTree(self, indent):
+        pass
+
+    # TODO - PG
+    @addToClass(AST.PrintInstruction)
+    def printTree(self, indent):
+        pass
+
+    # TODO - PG
+    @addToClass(AST.LabeledInstruction)
+    def printTree(self, indent):
+        pass
 
     # TODO - PG
     @addToClass(AST.Assignment)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    def printTree(self, indent):
+        pass
 
     # TODO - PG
-    @addToClass(AST.ChoiceInstr)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.ChoiceInstruction)
+    def printTree(self, indent):
+        pass
 
     # TODO - PG
-    @addToClass(AST.WhileInstr)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.WhileInstruction)
+    def printTree(self, indent):
+        pass
+
+    # TODO - PG
+    @addToClass(AST.RepeatInstruction)
+    def printTree(self, indent):
+        pass
+
+    # TODO - PG
+    @addToClass(AST.CompoundInstruction)
+    def printTree(self, indent):
+        pass
+
+    # TODO - PG
+    @addToClass(AST.CompoundSegments)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.RepeatInstr)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.CompoundSegment)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.ReturnInstr)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.Const)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.ContinueInstr)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.Integer)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.BreakInstr)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.Float)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.CompoundInstr)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.String)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
     @addToClass(AST.Condition)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.Expression)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.Variable)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.ExprListOrEmpty)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.BinExpr)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.ExprList)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.BracketExpression)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.FundefsOpt)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.FunctionCallExpression)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.Fundefs)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.ExpressionList)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.Fundef)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.FunctionDefinitions)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.ArgsListOrEmpty)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.FunctionDefinition)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.ArgsList)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.ArgumentsList)
+    def printTree(self, indent):
+        pass
 
     # TODO - WB
-    @addToClass(AST.Arg)
-    def printTree(self):
-        raise Exception("Print tree not implemented in class " + self.__class__.__name__)
+    @addToClass(AST.Argument)
+    def printTree(self, indent):
+        pass
