@@ -138,7 +138,6 @@ class Cparser(object):
 
     def p_assignment(self, p):
         """assignment : ID '=' expression ';' """
-        print("Assignment: >>" + str(p[1]) + "<<>>" + str(p[3]) + "<<")
         if len(p) == 5:
             variable = ast.Variable()
             variable.set_identifier(p[1])
@@ -220,7 +219,6 @@ class Cparser(object):
         """const : INTEGER
                  | FLOAT
                  | STRING """
-        print("Const: " + str(p[1]))
         if len(p) == 2:
             p[0] = ast.Const(p[1])
 
@@ -255,7 +253,6 @@ class Cparser(object):
             if p[1] == '(':
                 p[0] = ast.BracketExpression(p[2])
             else:
-                print("BinExpr:>>" + str(p[1]) + ">>" + str(p[2]) + ">>" + str(p[3]) + "<<")
                 p[0] = ast.BinExpr()
                 p[0].set_op(p[2])
                 p[0].set_left(p[1])

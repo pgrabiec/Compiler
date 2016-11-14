@@ -10,7 +10,7 @@ def addToClass(cls):
 
 class TreePrinter:
     @addToClass(AST.Node)
-    def printTree(self, indent=0):
+    def printTree(self, space=0):
         raise Exception("printTree is not defined in class " + self.__class__.__name__)
 
     @addToClass(AST.Program)
@@ -32,7 +32,7 @@ class TreePrinter:
 
     @addToClass(AST.Declaration)
     def printTree(self, space=0):
-        return ("|" * space + "DECL\n" +
+        return ("| " * space + "DECL\n" +
                 self.inits.printTree(space + 1))
 
     @addToClass(AST.Inits)
@@ -41,8 +41,8 @@ class TreePrinter:
 
     @addToClass(AST.Init)
     def printTree(self, space=0):
-        return ("|" * space + "=\n" +
-                "|" * (space + 1) + str(self.variable) + "\n" +
+        return ("| " * space + "=\n" +
+                self.variable.printTree(space + 1) +
                 self.expression.printTree(space + 1))
 
     @addToClass(AST.Instructions)
@@ -51,56 +51,56 @@ class TreePrinter:
 
     @addToClass(AST.PrintInstruction)
     def printTree(self, space=0):
-        return ("|" * space + "PRINT\n" +
+        return ("| " * space + "PRINT\n" +
                 self.args.printTree(space))
 
     @addToClass(AST.LabeledInstruction)
     def printTree(self, space=0):
-        return ("|" * space + "LABEL\n" +
-                "|" * (space + 1) + str(self.identifier) + "\n" +
+        return ("| " * space + "LABEL\n" +
+                "| " * (space + 1) + str(self.identifier) + "\n" +
                 self.instruction.printTree(space))
 
     @addToClass(AST.Assignment)
     def printTree(self, space=0):
-        return ("|" * space + "=\n" +
+        return ("| " * space + "=\n" +
                 self.variable.printTree(space + 1) +
                 self.expression.printTree(space + 1))
 
     @addToClass(AST.ChoiceInstruction)
     def printTree(self, space=0):
         if self.instruction_false is None:
-            return ("|" * space + "IF\n" +
+            return ("| " * space + "IF\n" +
                     self.condition.printTree(space + 1) + self.instruction_true.printTree(space + 1))
         else:
-            return ("|" * space + "IF\n" +
+            return ("| " * space + "IF\n" +
                     self.condition.printTree(space + 1) + self.instruction_true.printTree(space + 1) +
-                    "|" * space + "ELSE\n" +
+                    "| " * space + "ELSE\n" +
                     self.instruction_false.printTree(space + 1))
 
     @addToClass(AST.WhileInstruction)
     def printTree(self, space=0):
-        return ("|" * space + "WHILE\n" +
+        return ("| " * space + "WHILE\n" +
                 self.condition.printTree(space + 1) + self.instruction.printTree(space))
 
     @addToClass(AST.RepeatInstruction)
     def printTree(self, space=0):
-        return ("|" * space + "REPEAT\n" +
+        return ("| " * space + "REPEAT\n" +
                 self.instructions.printTree(space) +
-                "|" * (space + 1) + "UNTIL\n" +
+                "| " * (space + 1) + "UNTIL\n" +
                 self.condition.printTree(space + 2))
 
     @addToClass(AST.ReturnInstruction)
     def printTree(self, space=0):
-        return ("|" * space + "RETURN\n" +
+        return ("| " * space + "RETURN\n" +
                 self.expression.printTree(space + 1))
 
     @addToClass(AST.BreakInstruction)
     def printTree(self, space=0):
-        return "|" * space + "BREAK\n"
+        return "| " * space + "BREAK\n"
 
     @addToClass(AST.ContinueInstruction)
     def printTree(self, space=0):
-        return "|" * space + "CONTINUE\n"
+        return "| " * space + "CONTINUE\n"
 
     @addToClass(AST.CompoundInstruction)
     def printTree(self, space=0):
@@ -123,12 +123,11 @@ class TreePrinter:
 
     @addToClass(AST.Const)
     def printTree(self, space):
-        return "|" * space + str(self.value) + "\n"
+        return "| " * space + str(self.value) + "\n"
 
     @addToClass(AST.BinExpr)
     def printTree(self, space=0):
-        print("BBBBBBBBBB:>>" + str(self.left) + ">>" + self.op + ">>" + str(self.right) + "<<")
-        return ("|" * space + self.op + "\n" +
+        return ("| " * space + self.op + "\n" +
                 self.left.printTree(space + 1) +
                 self.right.printTree(space + 1))
 
@@ -138,8 +137,8 @@ class TreePrinter:
 
     @addToClass(AST.FunctionCallExpression)
     def printTree(self, space):
-        return ("|" * space + "FUNCALL\n" +
-                "|" * (space + 1) + str(self.identifier) + "\n" +
+        return ("| " * space + "FUNCALL\n" +
+                "| " * (space + 1) + str(self.identifier) + "\n" +
                 self.arguments.printTree(space + 1))
 
     @addToClass(AST.ExpressionList)
@@ -153,9 +152,9 @@ class TreePrinter:
 
     @addToClass(AST.FunctionDefinition)
     def printTree(self, space=0):
-        return ("|" * space + "FUNDEF\n" +
-                "|" * (space + 1) + str(self.identifier) + "\n" +
-                "|" * (space + 2) + "RET " + str(self.type) + "\n" +
+        return ("| " * space + "FUNDEF\n" +
+                "| " * (space + 1) + str(self.identifier) + "\n" +
+                "| " * (space + 2) + "RET " + str(self.type) + "\n" +
                 self.arguments.printTree(space + 1) +
                 self.instructions.printTree(space))
 
@@ -165,9 +164,8 @@ class TreePrinter:
 
     @addToClass(AST.Argument)
     def printTree(self, space=0):
-        return "|" * space + "ARG " + str(self.argument_identifier) + "\n"
+        return "| " * space + "ARG " + str(self.argument_identifier) + "\n"
 
-    # TODO -------- IS IT NECESSARY ??? --------
     @addToClass(AST.Variable)
     def printTree(self, space):
-        return "|" * space + str(self.identifier) + "\n"
+        return "| " * space + str(self.identifier) + "\n"
