@@ -52,9 +52,9 @@ class Cparser(object):
                 p[0].add_segment(p[2])
 
     def p_segment(self, p):
-        """segment : variable_inits
-                   | function_definitions
-                   | instructions """
+        """segment : declarations
+                   | fundefs_opt
+                   | instructions_opt """
         p[0] = ast.Segment(p[1])
 
     def p_declarations(self, p):
@@ -138,65 +138,81 @@ class Cparser(object):
         p[0].set_identifier(p[1])
         p[0].set_instruction(p[3])
 
-    # ------------------------------
-
-    # TODO
     def p_assignment(self, p):
         """assignment : ID '=' expression ';' """
+        p[0] = ast.Assignment()
+        p[0].set_variable(p[1])
+        p[0].set_expression(p[3])
 
-    # TODO
     def p_choice_instruction(self, p):
         """choice_instruction : IF '(' condition ')' instruction  %prec IFX
                               | IF '(' condition ')' instruction ELSE instruction
                               | IF '(' error ')' instruction  %prec IFX
                               | IF '(' error ')' instruction ELSE instruction """
+        if len(p) >= 6:
+            p[0] = ast.ChoiceInstruction()
+            p[0].set_condition(p[3])
+            p[0].set_instruction_true(p[5])
+            p[0].set_instruction_false(None)
+        if len(p) == 8:
+            p[0].set_instruction_false(p[7])
 
-    # TODO
     def p_while_instruction(self, p):
         """while_instruction : WHILE '(' condition ')' instruction
                              | WHILE '(' error ')' instruction """
+        p[0] = ast.WhileInstruction()
+        p[0].set_condition(p[3])
+        p[0].set_instruction(p[5])
 
-    # TODO
     def p_repeat_instruction(self, p):
         """repeat_instruction : REPEAT instructions UNTIL condition ';' """
+        p[0] = ast.RepeatInstruction()
+        p[0].set_condition(p[2])
+        p[0].set_instructions(p[4])
 
-    # TODO
     def p_return_instruction(self, p):
         """return_instruction : RETURN expression ';' """
+        p[0] = ast.ReturnInstruction()
+        p[0].set_expression(p[2])
 
-    # TODO
     def p_break_instruction(self, p):
         """break_instruction : BREAK ';' """
+        p[0] = ast.BreakInstruction()
 
-    # TODO
     def p_continue_instruction(self, p):
         """continue_instruction : CONTINUE ';' """
+        p[0] = ast.ContinueInstruction()
 
-    # TODO
     def p_compound_instruction(self, p):
         """compound_instruction : '{' compound_segments '}' """
+        p[0] = ast.CompoundInstruction()
+        p[0].set_instructions(p[2])
 
-    # TODO
     def p_compound_segments(self, p):
         """compound_segments : compound_segments compound_segment
                              | """
+        if len(p) == 3:
+            if p[1] is None:
+                p[0] = ast.CompoundSegments()
+            else:
+                p[0] = p[1]
+            p[0].add_segment(p[2])
 
-    # TODO
     def p_compound_segment(self, p):
         """compound_segment : declarations
                             | instructions_opt """
+        p[0] = ast.CompoundSegment(p[1])
 
-    # TODO
     def p_condition(self, p):
         """condition : expression"""
+        p[0] = ast.Condition(p[1])
 
-    # TODO
     def p_const(self, p):
         """const : INTEGER
                  | FLOAT
                  | STRING"""
+        p[0] = ast.Const(p[1])
 
-    # TODO
     def p_expression(self, p):
         """expression : const
                       | ID
@@ -222,6 +238,22 @@ class Cparser(object):
                       | '(' error ')'
                       | ID '(' expr_list_or_empty ')'
                       | ID '(' error ')' """
+        if len(p) == 2:
+            p[0] = ast.Const(p[1])
+        elif len(p) == 3:
+            if p[1] == '(':
+                p[0] = ast.BracketExpression(p[2])
+            else:
+                p[0] = ast.BinExpr()
+                p[0].set_op(p[2])
+                p[0].set_left(p[1])
+                p[0].set_right(p[3])
+        elif len(p) == 4:
+            p[0] = ast.FunctionCallExpression()
+            p[0].set_identifier(p[1])
+            p[0].set_arguments(p[3])
+
+# ------------------------------
 
     # TODO
     def p_expr_list_or_empty(self, p):
