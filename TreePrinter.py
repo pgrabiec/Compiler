@@ -144,8 +144,8 @@ class TreePrinter:
     def printTree(self, space=0):
         return ("| " * space + "FUNDEF\n" +
                 "| " * (space + 1) + str(self.identifier) + "\n" +
-                "| " * (space + 2) + "RET " + str(self.type) + "\n" +
-                self.arguments.printTree(space + 1) +
+                "| " * (space + 1) + "RET " + str(self.type) + "\n" +
+                self.arguments.printTree(space) +
                 self.instructions.printTree(space))
 
     @addToClass(AST.ArgumentsList)
