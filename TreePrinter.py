@@ -134,7 +134,7 @@ class TreePrinter:
     def printTree(self, space):
         return ("| " * space + "FUNCALL\n" +
                 "| " * (space + 1) + str(self.identifier) + "\n" +
-                self.arguments.printTree(space + 1))
+                self.arguments.printTree(space))
 
     @addToClass(AST.ExpressionList)
     def printTree(self, space=0):
