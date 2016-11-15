@@ -65,12 +65,12 @@ class TreePrinter:
     def printTree(self, space=0):
         if self.instruction_false is None:
             return ("| " * space + "IF\n" +
-                    self.condition.printTree(space + 1) + self.instruction_true.printTree(space))
+                    self.condition.printTree(space + 1) + self.instruction_true.printTree(space + 1))
         else:
             return ("| " * space + "IF\n" +
-                    self.condition.printTree(space + 1) + self.instruction_true.printTree(space) +
+                    self.condition.printTree(space + 1) + self.instruction_true.printTree(space + 1) +
                     "| " * space + "ELSE\n" +
-                    self.instruction_false.printTree(space))
+                    self.instruction_false.printTree(space + 1))
 
     @addToClass(AST.WhileInstruction)
     def printTree(self, space=0):
