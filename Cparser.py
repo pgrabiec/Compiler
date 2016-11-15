@@ -248,7 +248,7 @@ class Cparser(object):
                       | ID '(' expr_list_or_empty ')'
                       | ID '(' error ')' """
         if len(p) == 2:
-                p[0] = ast.Const(p[1])
+            p[0] = ast.Const(str(p[1]).replace("\n", ""))
         elif len(p) == 4:
             if p[1] == '(':
                 p[0] = ast.BracketExpression(p[2])

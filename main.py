@@ -15,3 +15,4 @@ if __name__ == '__main__':
     text = file.read()
     ast = parser.parse(text, lexer=Cparser.scanner)
     print(ast)
+

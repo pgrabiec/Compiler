@@ -23,15 +23,6 @@ class Segment(Node):
         self.content = content
 
 
-class Declarations(Node):
-    def __init__(self):
-        self.declarations = []
-
-    def add_declaration(self, declaration):
-        """:arg declaration : AST.Init"""
-        self.declarations.append(declaration)
-
-
 class Declaration(Node):
     def __init__(self, variable_type, inits):
         self.variable_type = variable_type
@@ -106,7 +97,6 @@ class ChoiceInstruction(Node):
 
 class WhileInstruction(Node):
     def set_condition(self, condition):
-        """:arg condition : AST.Expression"""
         self.condition = condition
 
     def set_instruction(self, instruction):
@@ -116,7 +106,6 @@ class WhileInstruction(Node):
 
 class RepeatInstruction(Node):
     def set_condition(self, condition):
-        """:arg condition : AST.Expression"""
         self.condition = condition
 
     def set_instructions(self, instructions):
@@ -126,7 +115,6 @@ class RepeatInstruction(Node):
 
 class ReturnInstruction(Node):
     def set_expression(self, expression):
-        """:arg expression : AST.Expression"""
         self.expression = expression
 
 
@@ -221,15 +209,6 @@ class ExpressionList(Node):
     def add_expression(self, expression):
         """:arg expression : AST.Expression"""
         self.expressions.append(expression)
-
-
-class FunctionDefinitions(Node):
-    def __init__(self):
-        self.function_definitions = []
-
-    def add_function_definition(self, function_definition):
-        """:arg function_definition : AST.FunctionDefinition"""
-        self.function_definitions.append(function_definition)
 
 
 class FunctionDefinition(Node):

@@ -25,11 +25,6 @@ class TreePrinter:
     def printTree(self, space=0):
         return self.content.printTree(space)
 
-    # TODO -------- Is it Correct Now ? --------
-    @addToClass(AST.Declarations)
-    def printTree(self, space):
-        return "".join(map(lambda e: e.printTree(space), self.declarations))
-
     @addToClass(AST.Declaration)
     def printTree(self, space=0):
         return ("| " * space + "DECL\n" +
@@ -70,12 +65,12 @@ class TreePrinter:
     def printTree(self, space=0):
         if self.instruction_false is None:
             return ("| " * space + "IF\n" +
-                    self.condition.printTree(space + 1) + self.instruction_true.printTree(space + 1))
+                    self.condition.printTree(space + 1) + self.instruction_true.printTree(space))
         else:
             return ("| " * space + "IF\n" +
-                    self.condition.printTree(space + 1) + self.instruction_true.printTree(space + 1) +
+                    self.condition.printTree(space + 1) + self.instruction_true.printTree(space) +
                     "| " * space + "ELSE\n" +
-                    self.instruction_false.printTree(space + 1))
+                    self.instruction_false.printTree(space))
 
     @addToClass(AST.WhileInstruction)
     def printTree(self, space=0):
@@ -144,11 +139,6 @@ class TreePrinter:
     @addToClass(AST.ExpressionList)
     def printTree(self, space=0):
         return "".join(map(lambda e: e.printTree(space + 1), self.expressions))
-
-    # TODO -------- Is it Correct Now ? --------
-    @addToClass(AST.FunctionDefinitions)
-    def printTree(self, space):
-        return "".join(map(lambda e: e.printTree(space), self.function_definitions))
 
     @addToClass(AST.FunctionDefinition)
     def printTree(self, space=0):
