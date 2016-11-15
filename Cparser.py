@@ -32,6 +32,7 @@ class Cparser(object):
                                                                                       p.type, p.value))
         else:
             print("Unexpected end of input")
+        raise Exception()
 
     def p_program(self, p):
         """program : segments"""
@@ -74,8 +75,6 @@ class Cparser(object):
                        | error ';' """
         if len(p) == 4:
             p[0] = ast.Declaration(p[1], p[2])
-        else:
-            raise Exception
 
     def p_inits(self, p):
         """inits : inits ',' init
@@ -86,8 +85,6 @@ class Cparser(object):
         elif len(p) == 2:
             p[0] = ast.Inits()
             p[0].add_init(p[1])
-        else:
-            raise Exception
 
     def p_init(self, p):
         """init : ID '=' expression """
@@ -261,8 +258,6 @@ class Cparser(object):
             p[0] = ast.FunctionCallExpression()
             p[0].set_identifier(p[1])
             p[0].set_arguments(p[3])
-        else:
-            raise Exception
 
     def p_expr_list_or_empty(self, p):
         """expr_list_or_empty : expr_list
@@ -281,8 +276,6 @@ class Cparser(object):
         elif len(p) == 2:
             p[0] = ast.ExpressionList()
             p[0].add_expression(p[1])
-        else:
-            raise Exception
 
     def p_fundef(self, p):
         """fundef : TYPE ID '(' args_list_or_empty ')' compound_instruction """
