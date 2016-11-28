@@ -18,7 +18,8 @@ class Segments(Node):
         """:arg segment : AST.Segment"""
         super().__init__(line)
         self.segments = []
-        self.segments.append(segment)
+        if segment is not None:
+            self.segments.append(segment)
 
 
 class Segment(Node):
@@ -135,7 +136,8 @@ class CompoundSegments(Node):
         """:arg segment : AST.CompoundSegment"""
         super().__init__(line)
         self.segments = []
-        self.segments.append(segment)
+        if segment is not None:
+            self.segments.append(segment)
 
 
 class CompoundSegment(Node):
@@ -196,7 +198,8 @@ class ExpressionList(Node):
         """:arg expression : AST.Expression"""
         super().__init__(line)
         self.expressions = []
-        self.expressions.append(expression)
+        if expression is not None:
+            self.expressions.append(expression)
 
 
 class FunctionDefinition(Node):
@@ -217,7 +220,8 @@ class ArgumentsList(Node):
         """:arg argument : AST.Argument"""
         super().__init__(line)
         self.arguments = []
-        self.arguments.append(argument)
+        if argument is not None:
+            self.arguments.append(argument)
 
 
 class Argument(Node):

@@ -126,10 +126,6 @@ class TreePrinter:
                 self.left.printTree(space + 1) +
                 self.right.printTree(space + 1))
 
-    @addToClass(AST.BracketExpression)
-    def printTree(self, space=0):
-        return self.expression.printTree(space)
-
     @addToClass(AST.FunctionCallExpression)
     def printTree(self, space):
         return ("| " * space + "FUNCALL\n" +
