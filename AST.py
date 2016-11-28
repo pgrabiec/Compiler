@@ -14,7 +14,7 @@ class Program(Node):
 
 
 class Segments(Node):
-    def __init__(self, line, segment=None):
+    def __init__(self, line=None, segment=None):
         """:arg segment : AST.Segment"""
         super().__init__(line)
         self.segments = []
@@ -102,11 +102,11 @@ class WhileInstruction(Node):
 
 
 class RepeatInstruction(Node):
-    def __init__(self, line, condition, instructions):
+    def __init__(self, line, instructions, condition):
         """:arg instructions : AST.Instructions"""
         super().__init__(line)
-        self.condition = condition
         self.instructions = instructions
+        self.condition = condition
 
 
 class ReturnInstruction(Node):
@@ -131,7 +131,7 @@ class CompoundInstruction(Node):
 
 
 class CompoundSegments(Node):
-    def __init__(self, line, segment):
+    def __init__(self, line=None, segment=None):
         """:arg segment : AST.CompoundSegment"""
         super().__init__(line)
         self.segments = []
@@ -172,13 +172,13 @@ class String(Const):
 
 
 class BinExpr(Node):
-    def __init__(self, line, op, left, right):
-        """:arg op : string
-           :arg left : AST.Expression
+    def __init__(self, line, left, op, right):
+        """:arg left : AST.Expression
+           :arg op : string
            :arg right : AST.Expression"""
         super().__init__(line)
-        self.op = op
         self.left = left
+        self.op = op
         self.right = right
 
 
@@ -192,7 +192,7 @@ class FunctionCallExpression(Node):
 
 
 class ExpressionList(Node):
-    def __init__(self, line, expression):
+    def __init__(self, line=None, expression=None):
         """:arg expression : AST.Expression"""
         super().__init__(line)
         self.expressions = []
@@ -213,7 +213,7 @@ class FunctionDefinition(Node):
 
 
 class ArgumentsList(Node):
-    def __init__(self, line, argument):
+    def __init__(self, line=None, argument=None):
         """:arg argument : AST.Argument"""
         super().__init__(line)
         self.arguments = []
