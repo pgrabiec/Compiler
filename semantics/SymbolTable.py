@@ -1,7 +1,8 @@
 class SymbolTable:
-    def __init__(self):
+    def __init__(self, name):
         super().__init__()
         self.symbol_dict = {}
+        self.scope_name = name
 
     def put_symbol(self, name, symbol):
         if name in self.symbol_dict:

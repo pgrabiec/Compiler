@@ -10,15 +10,15 @@ def poll(list_as_stack):
 class ScopeManager:
     def __init__(self):
         super().__init__()
-        self.globalSymbolTable = SymbolTable()
+        self.globalSymbolTable = SymbolTable("GLOBAL")
         self.scopeSymbolTablesStack = []
 
     def check_scope_present(self, err_msg):
         if len(self.scopeSymbolTablesStack) < 1:
             raise Exception(err_msg)
 
-    def push_scope(self):
-        self.scopeSymbolTablesStack.append(SymbolTable())
+    def push_scope(self, scope_name):
+        self.scopeSymbolTablesStack.append(SymbolTable(scope_name))
 
     def pop_scope(self):
         self.check_scope_present("Attempt to pop a scope symbol table from empty stack")
