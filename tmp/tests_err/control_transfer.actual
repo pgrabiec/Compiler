@@ -1,3 +1,0 @@
-Line 6: Return: Continue instruction found outside loop body.
-Line 12: Return: Break instruction found outside loop body.
-Line 17: Return: Return statement found outside function scope
