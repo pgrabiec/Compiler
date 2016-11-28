@@ -39,7 +39,7 @@ class Inits(Node):
 
 class Init(Node):
     def set_variable(self, variable):
-        """:arg variable : AST.Variable"""
+        """:arg variable : AST.VariableReference"""
         self.variable = variable
 
     def set_expression(self, expression):
@@ -73,7 +73,7 @@ class LabeledInstruction(Node):
 
 class Assignment(Node):
     def set_variable(self, variable):
-        """:arg variable : AST.Variable"""
+        """:arg variable : AST.VariableReference"""
         self.variable = variable
 
     def set_expression(self, expression):
@@ -185,13 +185,6 @@ class BinExpr(Node):
         self.right = right
 
 
-class BracketExpression(Node):
-    """Matches production expression -> ( expression )"""
-
-    def __init__(self, expression):
-        self.expression = expression
-
-
 class FunctionCallExpression(Node):
     def set_identifier(self, identifier):
         """:arg identifier : string"""
@@ -248,7 +241,7 @@ class Argument(Node):
         self.argument_identifier = argument_identifier
 
 
-class Variable(Node):
+class VariableReference(Node):
     """Matches ID terminals when they are associated with a variable
         Also, matches the production: expression -> ID"""
     def set_identifier(self, identifier):

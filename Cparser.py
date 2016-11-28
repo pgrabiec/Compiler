@@ -32,7 +32,6 @@ class Cparser(object):
                                                                                       p.type, p.value))
         else:
             print("Unexpected end of input")
-        raise Exception()
 
     def p_program(self, p):
         """program : segments"""
@@ -90,7 +89,7 @@ class Cparser(object):
         """init : ID '=' expression """
         if len(p) == 4:
             p[0] = ast.Init()
-            variable = ast.Variable()
+            variable = ast.VariableReference()
             variable.set_identifier(p[1])
             p[0].set_variable(variable=variable)
             p[0].set_expression(p[3])
@@ -136,7 +135,7 @@ class Cparser(object):
     def p_assignment(self, p):
         """assignment : ID '=' expression ';' """
         if len(p) == 5:
-            variable = ast.Variable()
+            variable = ast.VariableReference()
             variable.set_identifier(p[1])
             p[0] = ast.Assignment()
             p[0].set_variable(variable=variable)
@@ -221,7 +220,7 @@ class Cparser(object):
 
     def p_expression(self, p):
         """expression : const
-                      | ID
+        | ID
                       | expression '+' expression
                       | expression '-' expression
                       | expression '*' expression
@@ -248,7 +247,7 @@ class Cparser(object):
             p[0] = ast.Const(str(p[1]).replace("\n", ""))
         elif len(p) == 4:
             if p[1] == '(':
-                p[0] = ast.BracketExpression(p[2])
+                p[0] = p[2]
             else:
                 p[0] = ast.BinExpr()
                 p[0].set_op(p[2])
