@@ -1,0 +1,4 @@
+Line 5: Invocation: Invoking undeclared function "nbonacci".
+Line 5: Return: Invalid return statement type: expected int, found None.
+Line 8: Function: Redefining "trib" which is already defined in scope "<global scope>".
+Line 8: Function: Missing return statement in "trib" function returning int.

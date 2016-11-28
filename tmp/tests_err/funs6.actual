@@ -1,0 +1,3 @@
+Line 6: Declaration: Redefining "pow" which is already defined as function name "<func pow>".
+Line 8: Identifier: Using undeclared variable "res".
+Line 8: Assignment: Invalid assignment type for "res": expected None, found int.

@@ -1,0 +1,5 @@
+Line 4: Declaration: Invalid declaration type for "x": expected int, found string.
+Line 6: BinExpr: Wrong operands for "-": string and string.
+Line 6: Assignment: Invalid assignment type for "u": expected string, found None.
+Line 7: BinExpr: Wrong operands for "/": string and string.
+Line 7: Assignment: Invalid assignment type for "u": expected string, found None.

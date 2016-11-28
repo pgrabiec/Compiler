@@ -1,0 +1,4 @@
+Line 9: Invocation: Incorrect number of arguments for "gcd" function: expected 2, found 1.
+Line 11: Invocation: Incorrect number of arguments for "gcd" function: expected 2, found 3.
+Line 21: Invocation: Invalid argument type for "gcd" function: expected int, found string.
+Line 21: Invocation: Invalid argument type for "gcd" function: expected int, found string.
