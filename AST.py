@@ -3,7 +3,7 @@ class Node(object):
         return self.printTree(0)
 
     def __init__(self, line):
-        self.line = line
+        self.lineno = line
 
 
 class Program(Node):

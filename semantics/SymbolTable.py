@@ -5,7 +5,7 @@ class SymbolTable:
         self.scope_name = name
 
     def put_symbol(self, name, symbol):
-        self.symbol_dict.update({name, symbol})
+        self.symbol_dict.update({name: symbol})
 
     # Raises KeyError if the mapping is not present
     def get_symbol(self, name):

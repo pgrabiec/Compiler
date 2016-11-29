@@ -190,18 +190,30 @@ class Cparser(object):
         p[0] = p[1]
 
     def p_const(self, p):
-        """const : INTEGER
-                 | FLOAT
-                 | STRING """
+        """const : integer
+                 | float
+                 | string """
         if len(p) == 2:
             p[0] = ast.Const(p.lineno(1), p[1])
 
+    def p_integer(self, p):
+        """integer : INTEGER"""
+        p[0] = ast.Integer(p.lineno(1), p[1])
+
+    def p_float(self, p):
+        """float : FLOAT"""
+        p[0] = ast.Float(p.lineno(1), p[1])
+
+    def p_string(self, p):
+        """string : STRING"""
+        p[0] = ast.String(p.lineno(1), p[1])
+
     def p_expr_id(self, p):
-        """expression : ID"""
+        """idexpr : ID"""
         p[0] = ast.Identifier(p.lineno(1), p[1])
 
     def p_expr_funcall(self, p):
-        """expression : ID '(' expr_list_or_empty ')'
+        """funcall : ID '(' expr_list_or_empty ')'
                       | ID '(' error ')' """
         p[0] = ast.FunctionCallExpression(p.lineno(1), p[1], p[3])
 
@@ -225,12 +237,16 @@ class Cparser(object):
                       | expression LE expression
                       | expression GE expression
                       | '(' expression ')'
-                      | '(' error ')' """
+                      | '(' error ')'
+                      | idexpr
+                      | funcall """
         if len(p) == 4:
             if p[1] == '(':
                 p[0] = p[2]
             else:
                 p[0] = ast.BinExpr(p.lineno(1), p[1], p[2], p[3])
+        elif len(p) == 2:
+            p[0] = p[1]
 
     def p_expr_list_or_empty(self, p):
         """expr_list_or_empty : expr_list

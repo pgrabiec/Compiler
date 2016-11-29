@@ -5,9 +5,10 @@ from semantics.ScopeManager import ScopeManager
 class NodeVisitor(object):
     def visit(self, node):
         method = 'visit_' + node.__class__.__name__
-        visitor = getattr(self, method, self.generic_visit)
+        visitor = getattr(self, method)
         return visitor(node)
 
+"""
     def generic_visit(self, node):  # Called if no explicit visitor function exists for a node.
         if isinstance(node, list):
             for elem in node:
@@ -25,6 +26,7 @@ class NodeVisitor(object):
                     # def generic_visit(self, node):
                     #    for child in node.children:
                     #        self.visit(child)
+"""
 
 
 class TypeChecker(NodeVisitor):
@@ -36,9 +38,10 @@ class TypeChecker(NodeVisitor):
         self.init_ttype()
         self.scope_manager = ScopeManager()
         self.scope_manager.push_scope("GLOBAL SCOPE")
+        self.errors = []
 
     def error(self, node, description):  # TODO
-        pass
+        self.errors.append("Line %d: %s" % (node.lineno, description))
 
     def init_ttype(self):
         for operator in '+-*/':  # c
@@ -59,9 +62,7 @@ class TypeChecker(NodeVisitor):
                 ('float', 'float'): 'int',
             }
         for operator in ('==', '!='):
-            self.ttype[operator] = {
-                ('string', 'string'): 'int'
-            }
+            self.ttype[operator]['string', 'string'] = 'int'
 
         for operator in ['%', '<<', '>>', '|', '&', '^']:
             self.ttype[operator] = {
@@ -88,17 +89,16 @@ class TypeChecker(NodeVisitor):
 
     def visit_Declaration(self, node):
         type = node.variable_type
-        inits = node.inits
+        inits = node.inits.inits
         for init in inits:
             identifier = init.identifier
             expression = self.visit(init.expression)
             if self.scope_manager.seek_symbol(identifier) is None:  # No symbol in the scope
-                self.scope_manager.add_scope_symbol(identifier, AST.Variable(init.line, identifier, type))  # add symbol
+                self.scope_manager.add_scope_symbol(identifier, AST.Variable(init.lineno, identifier, type))  # add symbol
             else:  # Symbol already present in scope
                 self.error(init, "Declaration: id \'%s\' is already defined" % identifier)
             try:  # Verify initialization value
-                if self.ttype["="][type, expression] != type:
-                    raise KeyError  # return value type is not compatible with 'type'
+                self.ttype["="][type, expression]
             except KeyError:  # types mismatch
                 self.error(init, "Declaration: attempt to initialize \'%s\' variable \'%s\' with \'%s\' value" %
                            (type, identifier, expression))
@@ -126,8 +126,7 @@ class TypeChecker(NodeVisitor):
         else:
             var_type = variable.type
             try:
-                if self.ttype["="][var_type, expression] != var_type:
-                    raise KeyError
+                self.ttype["="][var_type, expression]
             except KeyError:
                 self.error(node, "Assignment: cannot assign value of type \'%s\' to variable \'%s\' type \'%s\'" %
                            (expression, identifier, var_type))
@@ -228,7 +227,7 @@ class TypeChecker(NodeVisitor):
         ret_declared = self.scope_manager.seek_symbol("fun return_type")
         if ret_declared is None:
             self.error(node, "Return: not in function declaration")
-        ret_returning = self.visit(node.arguments)
+        ret_returning = self.visit(node.expression)
         try:
             self.ttype["="][ret_returning, ret_declared]
         except KeyError:
@@ -259,19 +258,20 @@ class TypeChecker(NodeVisitor):
             self.scope_manager.add_scope_symbol(variable.identifier, variable)
         self.return_statement_occurred = False
 
-        self.visit(instructions)
+        for instr in instructions:
+            self.visit(instr)
 
         if not self.return_statement_occurred:
             self.error(node, "Function Definition: missing return statement")
         self.scope_manager.pop_scope()
 
+    # def visit_ArgumentsList(self, node): pass
 
+    # def visit_Argument(self, node): pass
 
-def visit_ArgumentsList(self, node):
-        pass
-
-    def visit_Argument(self, node):
-        pass
-
-    def visit_VariableReference(self, node):
-        pass
+    def visit_Identifier(self, node):
+        variable = self.scope_manager.seek_symbol(node.identifier)
+        if variable is None:
+            self.error(node, "Referencing undeclared identifier %s" % node.identifier)
+            return
+        return variable.type
