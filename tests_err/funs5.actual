@@ -1,0 +1,2 @@
+Line 5: Function Call: no function declared with id 'nbonacci'
+Line 5: Return: returning incompatible expression type 'None' while specified 'int'

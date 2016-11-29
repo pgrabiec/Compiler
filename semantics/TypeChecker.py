@@ -250,6 +250,7 @@ class TypeChecker(NodeVisitor):
             arguments_variable_list.append(
                 variable
             )
+
         self.scope_manager.add_scope_symbol("fun %s" % identifier, (return_type, arguments_variable_list))
 
         self.scope_manager.push_scope("function %s" % identifier)

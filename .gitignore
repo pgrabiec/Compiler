@@ -3,3 +3,5 @@
 *.out
 parsetab.py
 __pycache__
+acceptance_test.py
+/tests_err

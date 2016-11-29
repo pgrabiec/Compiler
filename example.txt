@@ -1,7 +1,7 @@
 
 float a = 0, b = 0, c = 0;
-
-int gcd(int m, int n) {
+int blah=222;
+int gcd(int m, string n) {
 
 int res = 0;
 blah = 1;

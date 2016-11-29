@@ -1,0 +1,5 @@
+Line 4: Declaration: attempt to initialize 'int' variable 'x' with 'string' value
+Line 0: Binary Expression: cannot apply '-' to 'string' and 'string'
+Line 6: Assignment: cannot assign value of type 'None' to variable 'u' type 'string'
+Line 0: Binary Expression: cannot apply '/' to 'string' and 'string'
+Line 7: Assignment: cannot assign value of type 'None' to variable 'u' type 'string'

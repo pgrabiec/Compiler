@@ -1,0 +1,5 @@
+Line 9: Function Call: supplied number of arguments not equal to 2
+Line 9: Assignment: cannot assign value of type 'None' to variable 'res' type 'int'
+Line 11: Function Call: supplied number of arguments not equal to 2
+Line 21: Function Call: argument no. 0 type 'string' passed to gcd is not compliant with the specified arg type 'int'
+Line 21: Function Call: argument no. 1 type 'string' passed to gcd is not compliant with the specified arg type 'int'

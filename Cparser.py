@@ -185,10 +185,6 @@ class Cparser(object):
         if len(p) == 2:
             p[0] = ast.Condition(p.lineno(1), p[1])
 
-    def p_const_expr(self, p):
-        """expression : const"""
-        p[0] = p[1]
-
     def p_const(self, p):
         """const : integer
                  | float
@@ -239,7 +235,8 @@ class Cparser(object):
                       | '(' expression ')'
                       | '(' error ')'
                       | idexpr
-                      | funcall """
+                      | funcall
+                      | const """
         if len(p) == 4:
             if p[1] == '(':
                 p[0] = p[2]

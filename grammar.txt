@@ -63,12 +63,16 @@ segment -> instruction
 
             condition -> expression
 
-            const -> INTEGER
-            const -> FLOAT
-            const -> STRING
+            const -> integer
+            const -> float
+            const -> string
 
-        expression -> const
-        expression -> ID
+                integer -> INTEGER
+                float -> FLOAT
+                string -> STRING
+
+            idexpr -> ID
+
         expression -> expression + expression
         expression -> expression - expression
         expression -> expression * expression
@@ -89,8 +93,12 @@ segment -> instruction
         expression -> expression GE expression
         expression -> ( expression )
         expression -> ( error )
-        expression -> ID ( expr_list_or_empty )
-        expression -> ID ( error )
+        expression -> funcall
+        expression -> const
+        expression -> idexpr
+
+            funcall -> ID ( expr_list_or_empty )
+            funcall -> ID ( error )
 
             expr_list_or_empty -> expr_list
             expr_list_or_empty -> <empty>
