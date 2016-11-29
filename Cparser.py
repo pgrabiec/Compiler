@@ -122,7 +122,7 @@ class Cparser(object):
         """assignment : ID '=' expression ';' """
         if len(p) == 5:
             identifier = ast.Identifier(p.lineno(1), p[1])
-            p[0] = ast.Assignment(p.lineno(3), identifier, p[3])
+            p[0] = ast.Assignment(p.lineno(1), identifier, p[3])
 
     def p_choice_instruction(self, p):
         """choice_instruction : IF '(' condition ')' instruction  %prec IFX

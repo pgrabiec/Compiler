@@ -92,28 +92,37 @@ class TypeChecker(NodeVisitor):
         for init in inits:
             identifier = init.identifier
             expression = self.visit(init.expression)
-            if self.scope_manager.seek_symbol(identifier) is None:
-                self.scope_manager.add_scope_symbol(identifier, )
-            else:
-                self.error(init, "Declaration: id \'%s\' is already defined" % identifier)
+            if self.scope_manager.seek_symbol(identifier) is None:  # No symbol in the scope
+                self.scope_manager.add_scope_symbol(identifier, AST.Variable(init.line, identifier, type))  # add symbol
+            else:   # Symbol already present in scope
+                self.error(init.line, "Declaration: id \'%s\' is already defined" % identifier)
+            try:    # Verify initialization value
+                if self.ttype["="][type, expression] != type:
+                    raise KeyError  # return value type is not compatible with 'type'
+            except KeyError:    # types mismatch
+                self.error(init.line, "Declaration: attempt to initialize \'%s\' variable \'%s\' with \'%s\' value" %
+                           (type, identifier, expression))
 
-    def visit_Inits(self, node):
-        pass
+    # def visit_Inits(self, node): pass
 
-    def visit_Init(self, node):
-        pass
+    # def visit_Init(self, node): pass
 
     def visit_Instructions(self, node):
-        pass
+        for instruction in node.instructions:
+            self.visit(instruction)
 
     def visit_PrintInstruction(self, node):
-        pass
+        self.visit(node.args)
 
     def visit_LabeledInstruction(self, node):
-        pass
+        self.visit(node.instruction)
 
     def visit_Assignment(self, node):
-        pass
+        identifier = node.variable.identifier
+        expression = self.visit(node.expression)
+        if self.scope_manager.seek_symbol(identifier) is None:
+            self.error(node, "Assignment: variable \'%s\' undeclared" % identifier)
+        else: # TODO
 
     def visit_ChoiceInstruction(self, node):
         pass
