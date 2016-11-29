@@ -82,8 +82,7 @@ class Cparser(object):
     def p_init(self, p):
         """init : ID '=' expression """
         if len(p) == 4:
-            variable = ast.VariableReference(p.lineno(1), p[1])
-            p[0] = ast.Init(p.lineno(1), variable, p[3])
+            p[0] = ast.Init(p.lineno(1), p[1], p[3])
 
     def p_instructions(self, p):
         """instructions : instructions instruction
@@ -122,8 +121,8 @@ class Cparser(object):
     def p_assignment(self, p):
         """assignment : ID '=' expression ';' """
         if len(p) == 5:
-            variable = ast.VariableReference(p.lineno(1), p[1])
-            p[0] = ast.Assignment(p.lineno(3), variable, p[3])
+            identifier = ast.Identifier(p.lineno(1), p[1])
+            p[0] = ast.Assignment(p.lineno(3), identifier, p[3])
 
     def p_choice_instruction(self, p):
         """choice_instruction : IF '(' condition ')' instruction  %prec IFX
@@ -186,6 +185,10 @@ class Cparser(object):
         if len(p) == 2:
             p[0] = ast.Condition(p.lineno(1), p[1])
 
+    def p_const_expr(self, p):
+        """expression : const"""
+        p[0] = p[1]
+
     def p_const(self, p):
         """const : INTEGER
                  | FLOAT
@@ -193,10 +196,17 @@ class Cparser(object):
         if len(p) == 2:
             p[0] = ast.Const(p.lineno(1), p[1])
 
+    def p_expr_id(self, p):
+        """expression : ID"""
+        p[0] = ast.Identifier(p.lineno(1), p[1])
+
+    def p_expr_funcall(self, p):
+        """expression : ID '(' expr_list_or_empty ')'
+                      | ID '(' error ')' """
+        p[0] = ast.FunctionCallExpression(p.lineno(1), p[1], p[3])
+
     def p_expression(self, p):
-        """expression : const
-                      | ID
-                      | expression '+' expression
+        """expression : expression '+' expression
                       | expression '-' expression
                       | expression '*' expression
                       | expression '/' expression
@@ -215,19 +225,12 @@ class Cparser(object):
                       | expression LE expression
                       | expression GE expression
                       | '(' expression ')'
-                      | '(' error ')'
-                      | ID '(' expr_list_or_empty ')'
-                      | ID '(' error ')' """
-        if len(p) == 2:
-            const_or_id = str(p[1]).replace("\n", "")
-            p[0] = ast.Const(p.lineno(1), const_or_id)
-        elif len(p) == 4:
+                      | '(' error ')' """
+        if len(p) == 4:
             if p[1] == '(':
                 p[0] = p[2]
             else:
                 p[0] = ast.BinExpr(p.lineno(1), p[1], p[2], p[3])
-        elif len(p) == 5:
-            p[0] = ast.FunctionCallExpression(p.lineno(1), p[1], p[3])
 
     def p_expr_list_or_empty(self, p):
         """expr_list_or_empty : expr_list

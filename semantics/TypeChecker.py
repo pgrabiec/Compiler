@@ -3,11 +3,42 @@ from semantics.ScopeManager import ScopeManager
 
 
 class NodeVisitor(object):
+    def visit(self, node):
+        method = 'visit_' + node.__class__.__name__
+        visitor = getattr(self, method, self.generic_visit)
+        return visitor(node)
+
+    def generic_visit(self, node):  # Called if no explicit visitor function exists for a node.
+        if isinstance(node, list):
+            for elem in node:
+                self.visit(elem)
+        else:
+            for child in node.children:
+                if isinstance(child, list):
+                    for item in child:
+                        if isinstance(item, AST.Node):
+                            self.visit(item)
+                elif isinstance(child, AST.Node):
+                    self.visit(child)
+
+                    # simpler version of generic_visit, not so general
+                    # def generic_visit(self, node):
+                    #    for child in node.children:
+                    #        self.visit(child)
+
+
+class TypeChecker(NodeVisitor):
     def __init__(self):
         super().__init__()
         self.ttype = {}
+        self.in_loop = False                    # For detecting errors with break; and continue;
+        self.return_statement_occurred = False  # For detecting missing return statement
         self.init_ttype()
         self.scope_manager = ScopeManager()
+        self.scope_manager.push_scope("GLOBAL SCOPE")
+
+    def error(self, node, description):  # TODO
+        pass
 
     def init_ttype(self):
         for operator in '+-*/':  # c
@@ -45,52 +76,104 @@ class NodeVisitor(object):
             ('string', 'string'): 'string'
         }
 
-    def visit(self, node):
-        method = 'visit_' + node.__class__.__name__
-        visitor = getattr(self, method, self.generic_visit)
-        return visitor(node)
+    def visit_Program(self, node):
+        self.visit(node.segments)
 
-    def generic_visit(self, node):  # Called if no explicit visitor function exists for a node.
-        if isinstance(node, list):
-            for elem in node:
-                self.visit(elem)
-        else:
-            for child in node.children:
-                if isinstance(child, list):
-                    for item in child:
-                        if isinstance(item, AST.Node):
-                            self.visit(item)
-                elif isinstance(child, AST.Node):
-                    self.visit(child)
+    def visit_Segments(self, node):
+        for segment in node.segments:
+            self.visit(segment)
 
-                    # simpler version of generic_visit, not so general
-                    # def generic_visit(self, node):
-                    #    for child in node.children:
-                    #        self.visit(child)
+    def visit_Segment(self, node):
+        self.visit(node.content)
 
+    def visit_Declaration(self, node):
+        type = node.variable_type
+        inits = node.inits
+        for init in inits:
+            identifier = init.identifier
+            expression = self.visit(init.expression)
+            if self.scope_manager.seek_symbol(identifier) is None:
+                self.scope_manager.add_scope_symbol(identifier, )
+            else:
+                self.error(init, "Declaration: id \'%s\' is already defined" % identifier)
 
-class TypeChecker(NodeVisitor):
-    def visit_BinExpr(self, node):
-        # alternative usage,
-        # requires definition of accept method in class Node
-        type1 = self.visit(node.left)  # type1 = node.left.accept(self)
-        type2 = self.visit(node.right)  # type2 = node.right.accept(self)
-        op = node.op;
-        # ...
-        #
+    def visit_Inits(self, node):
+        pass
 
-    def visit_RelExpr(self, node):
-        type1 = self.visit(node.left)  # type1 = node.left.accept(self)
-        type2 = self.visit(node.right)  # type2 = node.right.accept(self)
-        # ...
-        #
+    def visit_Init(self, node):
+        pass
+
+    def visit_Instructions(self, node):
+        pass
+
+    def visit_PrintInstruction(self, node):
+        pass
+
+    def visit_LabeledInstruction(self, node):
+        pass
+
+    def visit_Assignment(self, node):
+        pass
+
+    def visit_ChoiceInstruction(self, node):
+        pass
+
+    def visit_WhileInstruction(self, node):
+        pass
+
+    def visit_RepeatInstruction(self, node):
+        pass
+
+    def visit_ReturnInstruction(self, node):
+        pass
+
+    def visit_BreakInstruction(self, node):
+        pass
+
+    def visit_ContinueInstruction(self, node):
+        pass
+
+    def visit_CompoundInstruction(self, node):
+        pass
+
+    def visit_CompoundSegments(self, node):
+        pass
+
+    def visit_CompoundSegment(self, node):
+        pass
+
+    def visit_Condition(self, node):
+        pass
+
+    def visit_Const(self, node):
+        pass
 
     def visit_Integer(self, node):
-        return 'int'
+        pass
 
-        # def visit_Float(self, node):
-        # ...
-        #
+    def visit_Float(self, node):
+        pass
 
-        # ...
-        #
+    def visit_String(self, node):
+        pass
+
+    def visit_BinExpr(self, node):
+        pass
+
+    def visit_FunctionCallExpression(self, node):
+        pass
+
+    def visit_ExpressionList(self, node):
+        pass
+
+    def visit_FunctionDefinition(self, node):
+        pass
+
+    def visit_ArgumentsList(self, node):
+        pass
+
+    def visit_Argument(self, node):
+        pass
+
+    def visit_VariableReference(self, node):
+        pass

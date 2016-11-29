@@ -1,0 +1,95 @@
+    def visit_Node(self, node):
+        pass
+
+    def visit_Program(self, node):
+        pass
+
+    def visit_Segments(self, node):
+        pass
+
+    def visit_Segment(self, node):
+        pass
+
+    def visit_Declaration(self, node):
+        pass
+
+    def visit_Inits(self, node):
+        pass
+
+    def visit_Init(self, node):
+        pass
+
+    def visit_Instructions(self, node):
+        pass
+
+    def visit_PrintInstruction(self, node):
+        pass
+
+    def visit_LabeledInstruction(self, node):
+        pass
+
+    def visit_Assignment(self, node):
+        pass
+
+    def visit_ChoiceInstruction(self, node):
+        pass
+
+    def visit_WhileInstruction(self, node):
+        pass
+
+    def visit_RepeatInstruction(self, node):
+        pass
+
+    def visit_ReturnInstruction(self, node):
+        pass
+
+    def visit_BreakInstruction(self, node):
+        pass
+
+    def visit_ContinueInstruction(self, node):
+        pass
+
+    def visit_CompoundInstruction(self, node):
+        pass
+
+    def visit_CompoundSegments(self, node):
+        pass
+
+    def visit_CompoundSegment(self, node):
+        pass
+
+    def visit_Condition(self, node):
+        pass
+
+    def visit_Const(self, node):
+        pass
+
+    def visit_Integer(self, node):
+        pass
+
+    def visit_Float(self, node):
+        pass
+
+    def visit_String(self, node):
+        pass
+
+    def visit_BinExpr(self, node):
+        pass
+
+    def visit_FunctionCallExpression(self, node):
+        pass
+
+    def visit_ExpressionList(self, node):
+        pass
+
+    def visit_FunctionDefinition(self, node):
+        pass
+
+    def visit_ArgumentsList(self, node):
+        pass
+
+    def visit_Argument(self, node):
+        pass
+
+    def visit_VariableReference(self, node):
+        pass

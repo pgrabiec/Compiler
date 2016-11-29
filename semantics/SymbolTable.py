@@ -5,12 +5,11 @@ class SymbolTable:
         self.scope_name = name
 
     def put_symbol(self, name, symbol):
-        if name in self.symbol_dict:
-            raise Exception("Attempt to overwrite a symbol \"" + name + "\"")
         self.symbol_dict.update({name, symbol})
 
-    def remove_symbol(self, name):
-        self.symbol_dict.pop(name)
+    # Raises KeyError if the mapping is not present
+    def get_symbol(self, name):
+        return self.symbol_dict[name]
 
     def contains_symbol(self, name):
         if name in self.symbol_dict:

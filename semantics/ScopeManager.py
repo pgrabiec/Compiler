@@ -10,7 +10,6 @@ def poll(list_as_stack):
 class ScopeManager:
     def __init__(self):
         super().__init__()
-        self.globalSymbolTable = SymbolTable("GLOBAL")
         self.scopeSymbolTablesStack = []
 
     def check_scope_present(self, err_msg):
@@ -29,30 +28,8 @@ class ScopeManager:
         scope = poll(self.scopeSymbolTablesStack)
         scope.put_symbol(name, symbol)
 
-    def remove_scope_symbol(self, name):
-        self.check_scope_present("Cannot remove scope symbol while there is no scope present")
-        scope = poll(self.scopeSymbolTablesStack)
-        scope.remove_symbol(name)
-
-    def add_global_symbol(self, name, symbol):
-        if name in self.globalSymbolTable:
-            raise Exception("Attempt to overwrite a symbol in the global symbol table")
-        self.globalSymbolTable.put_symbol(name=name, symbol=symbol)
-
-    def remove_global_symbol(self, name):
-        if name not in self.globalSymbolTable:
-            raise Exception("Attempt to remove a global symbol while it is already not present")
-
     def seek_symbol(self, name):
         for scope in self.scopeSymbolTablesStack:
-            if name in scope:
-                return scope[name]
-        if name in self.globalSymbolTable:
-            return self.globalSymbolTable[name]
+            if scope.contains_symbol(name):
+                return scope.get_symbol(name)
         return None
-
-
-
-
-
-

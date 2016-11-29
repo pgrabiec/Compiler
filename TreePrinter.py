@@ -152,6 +152,6 @@ class TreePrinter:
     def printTree(self, space=0):
         return "| " * space + "ARG " + str(self.argument_identifier) + "\n"
 
-    @addToClass(AST.VariableReference)
+    @addToClass(AST.Identifier)
     def printTree(self, space):
         return "| " * space + str(self.identifier) + "\n"

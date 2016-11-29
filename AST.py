@@ -35,6 +35,7 @@ class Declaration(Node):
         self.inits = inits
 
 
+# Not empty
 class Inits(Node):
     def __init__(self, line, init):
         super().__init__(line)
@@ -43,11 +44,11 @@ class Inits(Node):
 
 
 class Init(Node):
-    def __init__(self, line, variable, expression):
-        """:arg variable : AST.VariableReference
+    def __init__(self, line, identifier, expression):
+        """:arg identifier : AST.Identifier
            :arg expression : AST.Expression"""
         super().__init__(line)
-        self.variable = variable
+        self.identifier = identifier
         self.expression = expression
 
 
@@ -76,7 +77,7 @@ class LabeledInstruction(Node):
 
 class Assignment(Node):
     def __init__(self, line, variable, expression):
-        """:arg variable : AST.VariableReference
+        """:arg variable : AST.Identifier
            :arg expression : AST.Expression"""
         super().__init__(line)
         self.variable = variable
@@ -233,7 +234,7 @@ class Argument(Node):
         self.argument_identifier = argument_identifier
 
 
-class VariableReference(Node):
+class Identifier(Node):
     """Matches ID terminals when they are associated with a variable
         Also, matches the production: expression -> ID"""
 
@@ -241,3 +242,10 @@ class VariableReference(Node):
         """:arg identifier : string"""
         super().__init__(line)
         self.identifier = identifier
+
+
+class Variable(Node):
+    def __init__(self, line, identifier, type):
+        super().__init__(line)
+        self.identifier = identifier
+        self.type = type
