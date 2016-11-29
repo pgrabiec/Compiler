@@ -192,9 +192,27 @@ class TypeChecker(NodeVisitor):
         except KeyError:
             self.error(node, "Binary Expression: cannot apply \'%s\' to \'%s\' and \'%s\'" % (op, left, right))
 
-    # ["fun id"][(ret_type, [Variable(id, type), ...])]
+    # TODO
+    # ["fun <fun_id>": (<ret_type>, [<Variable(id, type)>, ...])
     def visit_FunctionCallExpression(self, node):
-        pass
+        identifier = node.identifier
+        given_args = node.arguments.expressions
+        fun_spec_tuple = self.scope_manager.seek_symbol("fun %s" % identifier)
+        if fun_spec_tuple is None:
+            self.error(node, "Function Call: no function declared with id \'%s\'" % identifier)
+            self.visit(node.arguments)
+            return
+        return_type, spec_args = fun_spec_tuple
+        if len(given_args) != len(spec_args):
+            self.error(node, "Function Call: supplied number of arguments not equal to %d" % len(spec_args))
+            for arg in given_args:
+                self.visit(arg)
+            if len(given_args) < len(spec_args):
+                return
+        for i in range(0, len(spec_args)):
+            given_arg = given_args[i]
+            spec_arg = spec_args[i]
+            if
 
     def visit_ReturnInstruction(self, node):
         pass
