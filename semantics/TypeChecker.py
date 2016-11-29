@@ -95,12 +95,12 @@ class TypeChecker(NodeVisitor):
             if self.scope_manager.seek_symbol(identifier) is None:  # No symbol in the scope
                 self.scope_manager.add_scope_symbol(identifier, AST.Variable(init.line, identifier, type))  # add symbol
             else:  # Symbol already present in scope
-                self.error(init.line, "Declaration: id \'%s\' is already defined" % identifier)
+                self.error(init, "Declaration: id \'%s\' is already defined" % identifier)
             try:  # Verify initialization value
                 if self.ttype["="][type, expression] != type:
                     raise KeyError  # return value type is not compatible with 'type'
             except KeyError:  # types mismatch
-                self.error(init.line, "Declaration: attempt to initialize \'%s\' variable \'%s\' with \'%s\' value" %
+                self.error(init, "Declaration: attempt to initialize \'%s\' variable \'%s\' with \'%s\' value" %
                            (type, identifier, expression))
 
     # def visit_Inits(self, node): pass
@@ -192,8 +192,8 @@ class TypeChecker(NodeVisitor):
         except KeyError:
             self.error(node, "Binary Expression: cannot apply \'%s\' to \'%s\' and \'%s\'" % (op, left, right))
 
-    # TODO
-    # ["fun <fun_id>": (<ret_type>, [<Variable(id, type)>, ...])
+    # function mapping in the self.scope_manager:
+    # "fun <fun_id>": (<ret_type>, [<Variable(id, type)>, ...])
     def visit_FunctionCallExpression(self, node):
         identifier = node.identifier
         given_args = node.arguments.expressions
@@ -210,20 +210,64 @@ class TypeChecker(NodeVisitor):
             if len(given_args) < len(spec_args):
                 return
         for i in range(0, len(spec_args)):
-            given_arg = given_args[i]
-            spec_arg = spec_args[i]
-            if
+            given_arg = self.visit(given_args[i])  # visit(expression)
+            spec_arg = spec_args[i]  # variable
+            try:
+                self.ttype["="][spec_arg.type, given_arg]
+                self.scope_manager.add_scope_symbol(spec_arg.identifier, spec_arg)
+            except KeyError:
+                self.error(node, "Function Call: argument no. %d type \'%s\' passed to %s is not compliant"
+                                 " with the specified arg type \'%s\'" % (i, given_arg, identifier, spec_arg.type))
+        return return_type
 
+    # function return type mapping in the self.scope_manager
+    # "fun return_type" : <ret_type>
+    # meaning that we are inside declaration of a function and it's specified return type is <ret_type>
     def visit_ReturnInstruction(self, node):
-        pass
+        self.return_statement_occurred = True
+        ret_declared = self.scope_manager.seek_symbol("fun return_type")
+        if ret_declared is None:
+            self.error(node, "Return: not in function declaration")
+        ret_returning = self.visit(node.arguments)
+        try:
+            self.ttype["="][ret_returning, ret_declared]
+        except KeyError:
+            self.error(node, "Return: returning incompatible expression type \'%s\' while specified \'%s\'" %
+                       (ret_returning, ret_declared))
 
     def visit_ExpressionList(self, node):
-        pass
+        for expression in node.expressions:
+            self.visit(expression)
 
     def visit_FunctionDefinition(self, node):
-        pass
+        identifier = node.identifier
+        return_type = node.type
+        arguments = node.arguments.arguments
+        instructions = node.instructions.instructions.segments
 
-    def visit_ArgumentsList(self, node):
+        arguments_variable_list = []
+        for arg in arguments:
+            variable = AST.Variable(arg.lineno, arg.argument_identifier, arg.argument_type);
+            arguments_variable_list.append(
+                variable
+            )
+        self.scope_manager.add_scope_symbol("fun %s" % identifier, (return_type, arguments_variable_list))
+
+        self.scope_manager.push_scope("function %s" % identifier)
+        self.scope_manager.add_scope_symbol("fun return_type", return_type)
+        for variable in arguments_variable_list:
+            self.scope_manager.add_scope_symbol(variable.identifier, variable)
+        self.return_statement_occurred = False
+
+        self.visit(instructions)
+
+        if not self.return_statement_occurred:
+            self.error(node, "Function Definition: missing return statement")
+        self.scope_manager.pop_scope()
+
+
+
+def visit_ArgumentsList(self, node):
         pass
 
     def visit_Argument(self, node):
