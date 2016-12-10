@@ -1,0 +1,86 @@
+program -> segments
+segments -> segments segment
+segments ->
+segment -> declaration
+segment -> fundef
+segment -> instruction
+declaration -> TYPE inits ';'
+declaration -> error ';'
+inits -> inits ',' init
+inits -> init
+init -> ID '=' expression
+instructions -> instructions instruction
+instructions -> instruction
+instruction -> print_instruction
+instruction -> labeled_instruction
+instruction -> assignment
+instruction -> choice_instruction
+instruction -> while_instruction
+instruction -> repeat_instruction
+instruction -> return_instruction
+instruction -> break_instruction
+instruction -> continue_instruction
+instruction -> compound_instruction
+instruction -> expression ';'
+print_instruction -> PRINT expr_list ';'
+print_instruction -> PRINT error ';'
+labeled_instruction -> ID ':' instruction
+assignment -> ID '=' expression ';'
+choice_instruction -> IF '(' condition ')' instruction %prec IFX
+choice_instruction -> IF '(' condition ')' instruction ELSE instruction
+choice_instruction -> IF '(' error ')' instruction %prec IFX
+choice_instruction -> IF '(' error ')' instruction ELSE instruction
+while_instruction -> WHILE '(' condition ')' instruction
+while_instruction -> WHILE '(' error ')' instruction
+repeat_instruction -> REPEAT instructions UNTIL condition ';'
+return_instruction -> RETURN expression ';'
+break_instruction -> BREAK ';'
+continue_instruction -> CONTINUE ';'
+compound_instruction -> '{' compound_segments '}'
+compound_segments -> compound_segments compound_segment
+compound_segments ->
+compound_segment -> declaration
+compound_segment -> instruction
+condition -> expression
+const -> integer
+const -> float
+const -> string
+integer -> INTEGER
+float -> FLOAT
+string -> STRING
+idexpr -> ID
+funcall -> ID '(' expr_list_or_empty ')'
+funcall -> ID '(' error ')'
+expression -> expression '+' expression
+expression -> expression '-' expression
+expression -> expression '*' expression
+expression -> expression '/' expression
+expression -> expression '%' expression
+expression -> expression '|' expression
+expression -> expression '&' expression
+expression -> expression '^' expression
+expression -> expression AND expression
+expression -> expression OR expression
+expression -> expression SHL expression
+expression -> expression SHR expression
+expression -> expression EQ expression
+expression -> expression NEQ expression
+expression -> expression '>' expression
+expression -> expression '<' expression
+expression -> expression LE expression
+expression -> expression GE expression
+expression -> '(' expression ')'
+expression -> '(' error ')'
+expression -> idexpr
+expression -> funcall
+expression -> const
+expr_list_or_empty -> expr_list
+expr_list_or_empty ->
+expr_list -> expr_list ',' expression
+expr_list -> expression
+fundef -> TYPE ID '(' args_list_or_empty ')' compound_instruction
+args_list_or_empty -> args_list
+args_list_or_empty ->
+args_list -> args_list ',' arg
+args_list -> arg
+arg -> TYPE ID
