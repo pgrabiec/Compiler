@@ -1,4 +1,0 @@
-Line 6: Continue: continue instruction not inside a loop
-Line 12: Break: break instruction not inside a loop
-Line 17: Return: not in function declaration
-Line 17: Return: returning incompatible expression type 'int' while specified 'None'

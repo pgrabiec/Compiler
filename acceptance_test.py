@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-import sys
 import filecmp
-import unittest
 import os
+import sys
+import unittest
+
 
 class AcceptanceTests(unittest.TestCase):
-
     @classmethod
     def add_test(cls, dirpath, filename):
         basename = os.path.splitext(filename)[0]
@@ -21,15 +21,20 @@ class AcceptanceTests(unittest.TestCase):
             return 'test_' + filename
 
         def test_func(self):
-            os.system("python main.py {2}.in > {2}.actual".format(dirpath,filename,name))
+            os.system("python main.py {2}.in > {2}.actual".format(dirpath, filename, name))
             file_actual = "{0}.actual".format(name)
             file_expected = "{0}.expected".format(name)
             res = filecmp.cmp(file_actual, file_expected)
-            self.assertTrue(res, "files {0} and {1} differ\n---ACTUAL---\n{2}\n---EXPECTED---\n{3}\n---".format(file_actual,
-                                                                                                                file_expected,
-                                                                                                                open(file_actual, 'r').read(),
-                                                                                                                open(file_expected, 'r').read()
-                                                                                                               ))
+            self.assertTrue(res,
+                            "files {0} and {1} differ\n---ACTUAL---\n{2}\n---EXPECTED---\n{3}\n---".format(file_actual,
+                                                                                                           file_expected,
+                                                                                                           open(
+                                                                                                               file_actual,
+                                                                                                               'r').read(),
+                                                                                                           open(
+                                                                                                               file_expected,
+                                                                                                               'r').read()
+                                                                                                           ))
 
         func_name = file2func_name(name)
         setattr(cls, func_name, test_func)
@@ -41,10 +46,10 @@ class AcceptanceTests(unittest.TestCase):
                 if filename.startswith('.'):
                     continue
                 elif filename.endswith('.in'):
-                    cls.add_test(dirpath,filename)
+                    cls.add_test(dirpath, filename)
+
 
 if __name__ == '__main__':
-
     test_dir = sys.argv[1] if len(sys.argv) > 1 else "tests_err"
     sys.argv = [sys.argv[0]]
     AcceptanceTests.add_tests(test_dir)
