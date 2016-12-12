@@ -1,6 +1,7 @@
 *.iml
 .idea
 *.out
+*.pyc
 parsetab.py
 __pycache__
 acceptance_test.py

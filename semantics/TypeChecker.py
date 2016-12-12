@@ -8,7 +8,6 @@ class NodeVisitor(object):
         visitor = getattr(self, method)
         return visitor(node)
 
-
 class TypeChecker(NodeVisitor):
     def __init__(self):
         super().__init__()
@@ -21,7 +20,7 @@ class TypeChecker(NodeVisitor):
         self.errors = []
 
     def error(self, node, description):
-        self.errors.append("Line %d: %s" % (node.lineno, description))
+        self.errors.append("%s: line %d" % (description, node.lineno))
 
     def init_ttype(self):
         for operator in '+-*/':  # c
@@ -78,12 +77,14 @@ class TypeChecker(NodeVisitor):
             identifier = init.identifier
             expression = self.visit(init.expression)
             if self.scope_manager.seek_symbol(identifier) is None:  # No symbol in the scope
-                self.scope_manager.add_scope_symbol(identifier, AST.Variable(init.lineno, identifier, type))  # add symbol
+                self.scope_manager.add_scope_symbol(identifier,
+                                                    AST.Variable(init.lineno, identifier, type))  # add symbol
             else:  # Symbol already present in scope
-                self.error(init, "Declaration: id \'%s\' is already defined" % identifier)
+                self.error(init, "Error: Variable \'%s\' already declared" % identifier)
             try:  # Verify initialization value
                 self.ttype["="][type, expression]
             except KeyError:  # types mismatch
+                # TODO - check if it is necessary
                 self.error(init, "Declaration: attempt to initialize \'%s\' variable \'%s\' with \'%s\' value" %
                            (type, identifier, expression))
 
@@ -106,14 +107,13 @@ class TypeChecker(NodeVisitor):
         expression = self.visit(node.expression)
         variable = self.scope_manager.seek_symbol(identifier)
         if variable is None:
-            self.error(node, "Assignment: variable \'%s\' undeclared" % identifier)
+            self.error(node, "Error: Call of undefined fun \'%s\'" % identifier)
         else:
             var_type = variable.type
             try:
                 self.ttype["="][var_type, expression]
             except KeyError:
-                self.error(node, "Assignment: cannot assign value of type \'%s\' to variable \'%s\' type \'%s\'" %
-                           (expression, identifier, var_type))
+                self.error(node, "Error: Assignment of \'%s\' to \'%s\'" % (expression, var_type))
 
     def visit_ChoiceInstruction(self, node):
         self.visit(node.condition)
@@ -135,11 +135,11 @@ class TypeChecker(NodeVisitor):
 
     def visit_BreakInstruction(self, node):
         if not self.in_loop:
-            self.error(node, "Break: break instruction not inside a loop")
+            self.error(node, "Error: break instruction outside a loop")
 
     def visit_ContinueInstruction(self, node):
         if not self.in_loop:
-            self.error(node, "Continue: continue instruction not inside a loop")
+            self.error(node, "Error: continue instruction outside a loop")
 
     def visit_CompoundInstruction(self, node):
         self.visit(node.instructions)
@@ -157,13 +157,13 @@ class TypeChecker(NodeVisitor):
     def visit_Const(self, node):
         return self.visit(node.value)
 
-    def visit_Integer(self, node):
+    def visit_Integer(self, _):
         return "int"
 
-    def visit_Float(self, node):
+    def visit_Float(self, _):
         return "float"
 
-    def visit_String(self, node):
+    def visit_String(self, _):
         return "string"
 
     def visit_BinExpr(self, node):
@@ -173,7 +173,7 @@ class TypeChecker(NodeVisitor):
         try:
             return self.ttype[op][left, right]
         except KeyError:
-            self.error(node, "Binary Expression: cannot apply \'%s\' to \'%s\' and \'%s\'" % (op, left, right))
+            self.error(node, "Error: Illegal operation, %s %s %s" % (left, op, right))
 
     # function mapping in the self.scope_manager:
     # "fun <fun_id>": (<ret_type>, [<Variable(id, type)>, ...])
@@ -182,12 +182,12 @@ class TypeChecker(NodeVisitor):
         given_args = node.arguments.expressions
         fun_spec_tuple = self.scope_manager.seek_symbol("fun %s" % identifier)
         if fun_spec_tuple is None:
-            self.error(node, "Function Call: no function declared with id \'%s\'" % identifier)
+            self.error(node, "Error: Call of undefined function \'%s\'" % identifier)
             self.visit(node.arguments)
             return
         return_type, spec_args = fun_spec_tuple
         if len(given_args) != len(spec_args):
-            self.error(node, "Function Call: supplied number of arguments not equal to %d" % len(spec_args))
+            self.error(node, "Error: Improper number of args in in %s call" % identifier)
             for arg in given_args:
                 self.visit(arg)
             if len(given_args) < len(spec_args):
@@ -199,6 +199,7 @@ class TypeChecker(NodeVisitor):
                 self.ttype["="][spec_arg.type, given_arg]
                 self.scope_manager.add_scope_symbol(spec_arg.identifier, spec_arg)
             except KeyError:
+                # TODO - check if it is necessary
                 self.error(node, "Function Call: argument no. %d type \'%s\' passed to %s is not compliant"
                                  " with the specified arg type \'%s\'" % (i, given_arg, identifier, spec_arg.type))
         return return_type
@@ -210,13 +211,13 @@ class TypeChecker(NodeVisitor):
         self.return_statement_occurred = True
         ret_declared = self.scope_manager.seek_symbol("fun return_type")
         if ret_declared is None:
-            self.error(node, "Return: not in function declaration")
+            self.error(node, "Error: return instruction outside a function")
         ret_returning = self.visit(node.expression)
         try:
             self.ttype["="][ret_returning, ret_declared]
         except KeyError:
-            self.error(node, "Return: returning incompatible expression type \'%s\' while specified \'%s\'" %
-                       (ret_returning, ret_declared))
+            self.error(node, "Error: Improper returned type, expected \'%s\', got \'%s\'" %
+                       (ret_declared, ret_returning))
 
     def visit_ExpressionList(self, node):
         for expression in node.expressions:
@@ -247,7 +248,8 @@ class TypeChecker(NodeVisitor):
             self.visit(instr)
 
         if not self.return_statement_occurred:
-            self.error(node, "Function Definition: missing return statement")
+            self.error(node,
+                       "Error: Missing return statement in function \'%s\' returning %s" % (identifier, return_type))
         self.scope_manager.pop_scope()
 
     # def visit_ArgumentsList(self, node): pass
@@ -257,6 +259,6 @@ class TypeChecker(NodeVisitor):
     def visit_Identifier(self, node):
         variable = self.scope_manager.seek_symbol(node.identifier)
         if variable is None:
-            self.error(node, "Referencing undeclared identifier %s" % node.identifier)
+            self.error(node, "Error: Usage of undeclared variable \'%s\'" % node.identifier)
             return
         return variable.type
