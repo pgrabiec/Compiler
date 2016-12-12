@@ -141,15 +141,8 @@ class TypeChecker(NodeVisitor):
         if not self.in_loop:
             self.error(node, "Error: continue instruction outside a loop")
 
-    def visit_CompoundInstruction(self, node):
+    def visit_CompoundInstructions(self, node):
         self.visit(node.instructions)
-
-    def visit_CompoundSegments(self, node):
-        for segment in node.segments:
-            self.visit(segment)
-
-    def visit_CompoundSegment(self, node):
-        self.visit(node.content)
 
     def visit_Condition(self, node):
         self.visit(node.expression)

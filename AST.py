@@ -97,6 +97,12 @@ class ContinueInstruction(Node):
     pass
 
 
+class CompoundInstructions(Node):
+    def __init__(self, line, instructions):
+        super().__init__(line)
+        self.instructions = instructions
+
+
 class Const(Node):
     def __init__(self, line, value):
         super().__init__(line)

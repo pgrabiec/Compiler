@@ -13,27 +13,137 @@ class Memory:
         self.variables[name] = value
 
 
+# Example of memories state in the stack (border of viability is determined by the topmost function memory position)
+#
+# O compound memory (viable)
+# O compound memory (viable)
+# O function memory (viable)
+# O compound memory (unavailable)
+# O function memory (unavailable)
+# O compound memory (unavailable)
+# O compound memory (unavailable)
+# O BOTTOM
 class MemoryStack:
     def __init__(self, memory=None):  # initialize memory stack with memory <memory>
         self.mem_stack = []
         if memory is not None:
             self.mem_stack.append(memory)
 
-    def get(self, name):  # gets from memory stack current value of variable <name>
+    # gets from all viable memories in the stack, returning the value from the most recently added memory
+    def get(self, name):
         size = len(self.mem_stack)
-        memory = self.mem_stack[size - 1]
-        return memory.get(name)
+        i = size - 1
+        while i >= 0:
+            memory = self.mem_stack[i]
+            if name in memory:
+                return memory.get(name)
+            i -= 1
+        return None
 
-    def insert(self, name, value):  # inserts into memory stack variable <name> with value <value>
-        self.set(name, value)
+    # checks if the variable <name> is declared in any of the scopes of the stack
+    def has_key(self, name):
+        size = len(self.mem_stack)
+        i = size - 1
+        while i >= 0:
+            memory = self.mem_stack[i]
+            if name in memory:
+                return True
+            if memory.name == "function memory":
+                return False
+            i -= 1
+        return False
 
-    def set(self, name, value):  # sets variable <name> to value <value>
+    # creates or updates entry for variable <name> with value <value>
+    def put_peek(self, name, value):  # inserts into memory stack variable <name> with value <value>
         size = len(self.mem_stack)
         memory = self.mem_stack[size - 1]
         memory.put(name, value)
 
-    def push(self, memory):  # pushes memory <memory> onto the stack
+    # updates value of variable <name> in the current viable scope
+    def update(self, name, value):
+        size = len(self.mem_stack)
+        i = size - 1
+        while i >= 0:
+            memory = self.mem_stack[i]
+            if name in memory:
+                memory.put(name, value)
+            if memory.name == "function memory":
+                return
+            i -= 1
+
+    # pushes memory <memory> onto the stack
+    def push(self, memory):
         self.mem_stack.append(memory)
 
-    def pop(self):  # pops the top memory from the stack
+    # pops the top memory from the stack
+    def pop(self):
         self.mem_stack.pop()
+
+    # returns the number of memories in the stack
+    def size(self):
+        return len(self.mem_stack)
+
+    # pops a layer of compound memories if any
+    def pop_compounds(self):
+        self.pop_layer_by_name("compound instructions memory")
+
+    # pops the first function memory (along with its compound instructions memory)
+    def pop_function(self):
+        self.pop_compounds()
+        self.pop_layer_by_name("function memory")
+
+    def pop_layer_by_name(self, name):
+        size = len(self.mem_stack)
+        i = size - 1
+        while i >= 0:
+            memory = self.mem_stack[i]
+            if memory.name == name:
+                self.mem_stack.pop(i)
+            else:
+                return
+            i -= 1
+
+    def pop_compound(self):
+        size = len(self.mem_stack)
+        memory = self.mem_stack[size - 1]
+        if memory.name == "compound instructions memory":
+            self.mem_stack.pop(size - 1)
+
+
+class MemoryManager:
+    def __init__(self):
+        super().__init__()
+        self.global_memory = Memory("Global memory")
+        self.scope_memory = MemoryStack(None)
+
+    def declare(self, name, value):
+        if self.scope_memory.size() > 0:
+            self.scope_memory.put_peek(name, value)
+        else:
+            self.global_memory.put(name, value)
+
+    def update_value(self, name, value):
+        if self.scope_memory.has_key(name):
+            self.scope_memory.update(name, value)
+        else:
+            if self.global_memory.has_key(name):
+                self.global_memory.put(name, value)
+
+    def get_value(self, name):
+        value = self.scope_memory.get(name)
+        if value is None:
+            return self.global_memory.get(name)
+        return value
+
+    def push_function_scope(self):
+        self.scope_memory.push(Memory("function memory"))
+
+    def push_compound_instructions_scope(self):
+        self.scope_memory.push(Memory("compound instructions memory"))
+
+    def pop_function_scope(self):
+        self.scope_memory.pop_function()
+
+    def pop_compound_instructions_scope(self):
+        self.scope_memory.pop_compound()
+

@@ -158,11 +158,10 @@ class Cparser(object):
         if len(p) == 3:
             p[0] = ast.ContinueInstruction(p.lineno(1))
 
-    # 1-1
     def p_compound_instructions(self, p):
         """compound_instructions : '{' compound_segments '}' """
         if len(p) == 4:
-            p[0] = p[2]
+            p[0] = ast.CompoundInstructions(p.lineno(1), p[2])
 
     # list
     def p_compound_segments(self, p):

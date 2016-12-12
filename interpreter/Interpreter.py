@@ -10,17 +10,18 @@ sys.setrecursionlimit(10000)
 
 
 class Interpreter(object):
-    @on('node')
-    def visit(self, node):
-        pass
+    def __init__(self):
+        super().__init__()
+        self.mem = MemoryManager()
 
-    @when(AST.Node)
+    @on('node')
     def visit(self, node):
         pass
 
     @when(AST.Program)
     def visit(self, node):
-        pass
+        for segment in node.segments:
+            self.visit(segment)
 
     @when(AST.Declaration)
     def visit(self, node):
