@@ -215,11 +215,12 @@ class TypeChecker(NodeVisitor):
         if ret_declared is None:
             self.error(node, "Error: return instruction outside a function")
         ret_returning = self.visit(node.expression)
-        try:
-            self.ttype["="][ret_returning, ret_declared]
-        except KeyError:
-            self.error(node, "Error: Improper returned type, expected \'%s\', got \'%s\'" %
-                       (ret_declared, ret_returning))
+        if ret_returning is not None and ret_declared is not None:
+            try:
+                self.ttype["="][ret_returning, ret_declared]
+            except KeyError:
+                self.error(node, "Error: Improper returned type, expected %s, got %s" %
+                           (ret_declared, ret_returning))
 
     def visit_ExpressionList(self, node):
         for expression in node.expressions:

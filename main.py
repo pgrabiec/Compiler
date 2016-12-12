@@ -4,7 +4,7 @@ import ply.yacc as yacc
 from Cparser import Cparser
 # import TreePrinter    # -- Parser --
 from semantics.TypeChecker import TypeChecker
-from Interpreter import Interpreter
+# from interpreter.Interpreter import Interpreter
 
 if __name__ == '__main__':
     try:
@@ -22,18 +22,18 @@ if __name__ == '__main__':
     #  print(ast)
 
     # -- Type Checker --
-    # typeChecker = TypeChecker()
-    # typeChecker.visit(ast)
-    # for err in typeChecker.errors:
-    #     print(err)
+    typeChecker = TypeChecker()
+    typeChecker.visit(ast)
+    for err in typeChecker.errors:
+        print(err)
 
     # -- Interpreter --
-    ast.accept(TypeChecker())
+    #ast.accept(TypeChecker())
 
     # jesli wizytor TypeChecker z implementacji w poprzednim lab korzystal z funkcji accept
     # to nazwa tej ostatniej dla Interpretera powinna zostac zmieniona, np. na accept2 ( ast.accept2(Interpreter()) )
     # tak aby rozne funkcje accept z roznych implementacji wizytorow nie kolidowaly ze soba
-    ast.accept(Interpreter())
+    #ast.accept(Interpreter())
 
     # in future
     # ast.accept(OptimizationPass1())

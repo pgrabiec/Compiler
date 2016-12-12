@@ -1,8 +1,3 @@
-
-int trib(int n) {
-    return 1;
-}
-
-int trib(int n) {
-    return 2;
+{
+print 1
 }

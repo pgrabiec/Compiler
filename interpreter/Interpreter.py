@@ -1,7 +1,7 @@
 import sys
 
-from Exceptions import *
-from Memory import *
+from interpreter.Exceptions import *
+from interpreter.Memory import *
 
 import AST
 from interpreter.visit import *
