@@ -68,6 +68,7 @@ def extract_grammar():
     output_path = "." + os.path.sep + "grammar_generated.txt"
     output_file = open(output_path, "w")
     output_file.write(grammar)
+    print("Grammar extracted successfully to file: " + output_path)
 
 
 if __name__ == '__main__':

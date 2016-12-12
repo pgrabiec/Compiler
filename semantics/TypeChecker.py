@@ -8,26 +8,6 @@ class NodeVisitor(object):
         visitor = getattr(self, method)
         return visitor(node)
 
-"""
-    def generic_visit(self, node):  # Called if no explicit visitor function exists for a node.
-        if isinstance(node, list):
-            for elem in node:
-                self.visit(elem)
-        else:
-            for child in node.children:
-                if isinstance(child, list):
-                    for item in child:
-                        if isinstance(item, AST.Node):
-                            self.visit(item)
-                elif isinstance(child, AST.Node):
-                    self.visit(child)
-
-                    # simpler version of generic_visit, not so general
-                    # def generic_visit(self, node):
-                    #    for child in node.children:
-                    #        self.visit(child)
-"""
-
 
 class TypeChecker(NodeVisitor):
     def __init__(self):
@@ -40,7 +20,7 @@ class TypeChecker(NodeVisitor):
         self.scope_manager.push_scope("GLOBAL SCOPE")
         self.errors = []
 
-    def error(self, node, description):  # TODO
+    def error(self, node, description):
         self.errors.append("Line %d: %s" % (node.lineno, description))
 
     def init_ttype(self):
@@ -76,6 +56,10 @@ class TypeChecker(NodeVisitor):
             ('int', 'float'): 'float',
             ('string', 'string'): 'string'
         }
+
+    def visit_list(self, l):
+        for item in l:
+            self.visit(item)
 
     def visit_Program(self, node):
         self.visit(node.segments)

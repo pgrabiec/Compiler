@@ -32,37 +32,32 @@ class Cparser(object):
         else:
             print("Unexpected end of input")
 
+    # 1-1
     def p_program(self, p):
         """program : segments"""
         if len(p) == 2:
-            p[0] = ast.Program(p.lineno(1), p[1])
-        else:
-            raise Exception
+            p[0] = p[1]
 
+    # list
     def p_segments(self, p):
         """segments : segments segment
                     | """
         if len(p) == 3:
             if p[1] is None:
-                p[0] = ast.Segments(p.lineno(2), p[2])
+                p[0] = [p[2]]
             else:
                 p[0] = p[1]
-                p[0].segments.append(p[2])
+                p[0].append(p[2])
         elif len(p) == 1:
-            p[0] = ast.Segments()  # Empty
-        else:
-            raise Exception
+            p[0] = []
 
+    # 1-1
     def p_segment(self, p):
         """segment : declaration
-                   | fundef
+                   | function_definition
                    | instruction """
         if len(p) == 2:
-            p[0] = ast.Segment(p.lineno(1), p[1])
-        else:
-            raise Exception
-        if p[1] is None:
-            raise Exception
+            p[0] = p[1]
 
     def p_declaration(self, p):
         """declaration : TYPE inits ';'
@@ -70,29 +65,32 @@ class Cparser(object):
         if len(p) == 4:
             p[0] = ast.Declaration(p.lineno(1), p[1], p[2])
 
+    # list
     def p_inits(self, p):
         """inits : inits ',' init
                  | init """
         if len(p) == 4:
             p[0] = p[1]
-            p[0].inits.append(p[3])
+            p[0].append(p[3])
         elif len(p) == 2:
-            p[0] = ast.Inits(p.lineno(1), p[1])
+            p[0] = [p[1]]
 
     def p_init(self, p):
         """init : ID '=' expression """
         if len(p) == 4:
             p[0] = ast.Init(p.lineno(1), p[1], p[3])
 
+    # list
     def p_instructions(self, p):
         """instructions : instructions instruction
                         | instruction """
         if len(p) == 3:
             p[0] = p[1]
-            p[0].instructions.append(p[2])
+            p[0].append(p[2])
         elif len(p) == 2:
-            p[0] = ast.Instructions(p.lineno(1), p[1])
+            p[0] = [p[1]]
 
+    # 1-1
     def p_instruction(self, p):
         """instruction : print_instruction
                        | labeled_instruction
@@ -103,7 +101,7 @@ class Cparser(object):
                        | return_instruction
                        | break_instruction
                        | continue_instruction
-                       | compound_instruction
+                       | compound_instructions
                        | expression ';' """
         if len(p) == 2 or len(p) == 3:
             p[0] = p[1]
@@ -160,133 +158,147 @@ class Cparser(object):
         if len(p) == 3:
             p[0] = ast.ContinueInstruction(p.lineno(1))
 
-    def p_compound_instruction(self, p):
-        """compound_instruction : '{' compound_segments '}' """
+    # 1-1
+    def p_compound_instructions(self, p):
+        """compound_instructions : '{' compound_segments '}' """
         if len(p) == 4:
-            p[0] = ast.CompoundInstruction(p.lineno(1), p[2])
+            p[0] = p[2]
 
+    # list
     def p_compound_segments(self, p):
         """compound_segments : compound_segments compound_segment
                              | """
         if len(p) == 3:
             p[0] = p[1]
-            p[0].segments.append(p[2])
+            p[0].append(p[2])
         elif len(p) == 1:
-            p[0] = ast.CompoundSegments()  # Empty
+            p[0] = []
 
+    # 1-1
     def p_compound_segment(self, p):
         """compound_segment : declaration
                             | instruction """
         if len(p) == 2:
-            p[0] = ast.CompoundSegment(p.lineno(1), p[1])
+            p[0] = p[1]
 
+    # 1-1
     def p_condition(self, p):
         """condition : expression"""
         if len(p) == 2:
-            p[0] = ast.Condition(p.lineno(1), p[1])
+            p[0] = p[1]
 
+    # 1-1
     def p_const(self, p):
         """const : integer
                  | float
                  | string """
         if len(p) == 2:
-            p[0] = ast.Const(p.lineno(1), p[1])
+            p[0] = p[1]
 
     def p_integer(self, p):
         """integer : INTEGER"""
-        p[0] = ast.Integer(p.lineno(1), p[1])
+        if len(p) == 2:
+            p[0] = ast.Integer(p.lineno(1), p[1])
 
     def p_float(self, p):
         """float : FLOAT"""
-        p[0] = ast.Float(p.lineno(1), p[1])
+        if len(p) == 2:
+            p[0] = ast.Float(p.lineno(1), p[1])
 
     def p_string(self, p):
         """string : STRING"""
-        p[0] = ast.String(p.lineno(1), p[1])
+        if len(p) == 2:
+            p[0] = ast.String(p.lineno(1), p[1])
 
-    def p_expr_id(self, p):
-        """idexpr : ID"""
+    def p_identifier_expression(self, p):
+        """identifier_expression : ID"""
         p[0] = ast.Identifier(p.lineno(1), p[1])
 
-    def p_expr_funcall(self, p):
-        """funcall : ID '(' expr_list_or_empty ')'
+    def p_function_call_expression(self, p):
+        """function_call_expression : ID '(' expr_list_or_empty ')'
                       | ID '(' error ')' """
         p[0] = ast.FunctionCallExpression(p.lineno(1), p[1], p[3])
 
+    # 1-1
     def p_expression(self, p):
-        """expression : expression '+' expression
-                      | expression '-' expression
-                      | expression '*' expression
-                      | expression '/' expression
-                      | expression '%' expression
-                      | expression '|' expression
-                      | expression '&' expression
-                      | expression '^' expression
-                      | expression AND expression
-                      | expression OR expression
-                      | expression SHL expression
-                      | expression SHR expression
-                      | expression EQ expression
-                      | expression NEQ expression
-                      | expression '>' expression
-                      | expression '<' expression
-                      | expression LE expression
-                      | expression GE expression
+        """expression : binary_expression
                       | '(' expression ')'
                       | '(' error ')'
-                      | idexpr
-                      | funcall
+                      | identifier_expression
+                      | function_call_expression
                       | const """
         if len(p) == 4:
             if p[1] == '(':
                 p[0] = p[2]
-            else:
-                p[0] = ast.BinExpr(p.lineno(1), p[1], p[2], p[3])
-        elif len(p) == 2:
+        else:
             p[0] = p[1]
 
+    def p_binary_expression(self, p):
+        """binary_expression : expression '+' expression
+                             | expression '-' expression
+                             | expression '*' expression
+                             | expression '/' expression
+                             | expression '%' expression
+                             | expression '|' expression
+                             | expression '&' expression
+                             | expression '^' expression
+                             | expression AND expression
+                             | expression OR expression
+                             | expression SHL expression
+                             | expression SHR expression
+                             | expression EQ expression
+                             | expression NEQ expression
+                             | expression '>' expression
+                             | expression '<' expression
+                             | expression LE expression
+                             | expression GE expression """
+        if len(p) == 4:
+            p[0] = ast.BinExpr(p.lineno(1), p[1], p[2], p[3])
+
+    def p_function_definition(self, p):
+        """function_definition : TYPE ID '(' args_list_or_empty ')' compound_instructions """
+        if len(p) == 7:
+            p[0] = ast.FunctionDefinition(p.lineno(1), p[1], p[2], p[4], p[6])
+
+    # list
+    def p_args_list(self, p):
+        """args_list : args_list ',' arg
+                     | arg """
+        if len(p) == 4:
+            p[0] = p[1]
+            p[0].append(p[3])
+        elif len(p) == 2:
+            p[0] = [p[1]]
+
+    def p_arg(self, p):
+        """arg : TYPE ID """
+        if len(p) == 3:
+            p[0] = ast.Argument(p.lineno(1), p[1], p[2])
+
+    # list
     def p_expr_list_or_empty(self, p):
         """expr_list_or_empty : expr_list
                               | """
         if len(p) == 2:
             p[0] = p[1]
         else:
-            p[0] = ast.ExpressionList()  # Empty
+            p[0] = []
 
+    # list
     def p_expr_list(self, p):
         """expr_list : expr_list ',' expression
                      | expression """
         if len(p) == 4:
             p[0] = p[1]
-            p[0].expressions.append(p[3])
+            p[0].append(p[3])
         elif len(p) == 2:
-            p[0] = ast.ExpressionList(p.lineno(1), p[1])
+            p[0] = [p[1]]
 
-    def p_fundef(self, p):
-        """fundef : TYPE ID '(' args_list_or_empty ')' compound_instruction """
-        if len(p) == 7:
-            p[0] = ast.FunctionDefinition(p.lineno(1), p[1], p[2], p[4], p[6])
-        else:
-            raise Exception
-
+    # 1-1
     def p_args_list_or_empty(self, p):
         """args_list_or_empty : args_list
                               | """
         if len(p) == 2:
             p[0] = p[1]
         elif len(p) == 1:
-            p[0] = ast.ArgumentsList()  # Empty
-
-    def p_args_list(self, p):
-        """args_list : args_list ',' arg
-                     | arg """
-        if len(p) == 4:
-            p[0] = p[1]
-            p[0].arguments.append(p[3])
-        elif len(p) == 2:
-            p[0] = ast.ArgumentsList(p.lineno(1), p[1])
-
-    def p_arg(self, p):
-        """arg : TYPE ID """
-        if len(p) == 3:
-            p[0] = ast.Argument(p.lineno(1), p[1], p[2])
+            p[0] = []

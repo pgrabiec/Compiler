@@ -18,10 +18,6 @@ class TreePrinter:
     def printTree(self, space=0):
         return self.segments.printTree(space)
 
-    @addToClass(AST.Segments)
-    def printTree(self, space=0):
-        return "".join(map(lambda e: e.printTree(space), self.segments))
-
     @addToClass(AST.Segment)
     def printTree(self, space=0):
         return self.content.printTree(space)

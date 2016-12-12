@@ -8,24 +8,8 @@ class Node(object):
 
 class Program(Node):
     def __init__(self, line, segments):
-        """:arg segments : AST.Segments"""
         super().__init__(line)
         self.segments = segments
-
-
-class Segments(Node):
-    def __init__(self, line=None, segment=None):
-        """:arg segment : AST.Segment"""
-        super().__init__(line)
-        self.segments = []
-        if segment is not None:
-            self.segments.append(segment)
-
-
-class Segment(Node):
-    def __init__(self, line, content):
-        super().__init__(line)
-        self.content = content
 
 
 class Declaration(Node):
@@ -35,14 +19,6 @@ class Declaration(Node):
         self.inits = inits
 
 
-# Not empty
-class Inits(Node):
-    def __init__(self, line, init):
-        super().__init__(line)
-        self.inits = []
-        self.inits.append(init)
-
-
 class Init(Node):
     def __init__(self, line, identifier, expression):
         """:arg identifier : AST.Identifier
@@ -50,13 +26,6 @@ class Init(Node):
         super().__init__(line)
         self.identifier = identifier
         self.expression = expression
-
-
-class Instructions(Node):
-    def __init__(self, line, instruction):
-        super().__init__(line)
-        self.instructions = []
-        self.instructions.append(instruction)
 
 
 class PrintInstruction(Node):
@@ -125,34 +94,6 @@ class ContinueInstruction(Node):
     pass
 
 
-class CompoundInstruction(Node):
-    def __init__(self, line, instructions):
-        """:arg instructions : AST.CompoundSegments"""
-        super().__init__(line)
-        self.instructions = instructions
-
-
-class CompoundSegments(Node):
-    def __init__(self, line=None, segment=None):
-        """:arg segment : AST.CompoundSegment"""
-        super().__init__(line)
-        self.segments = []
-        if segment is not None:
-            self.segments.append(segment)
-
-
-class CompoundSegment(Node):
-    def __init__(self, line, content):
-        super().__init__(line)
-        self.content = content
-
-
-class Condition(Node):
-    def __init__(self, line, expression):
-        super().__init__(line)
-        self.expression = expression
-
-
 class Const(Node):
     def __init__(self, line, value):
         super().__init__(line)
@@ -174,15 +115,14 @@ class String(Const):
     pass
 
 
-class BinExpr(Node):
-    def __init__(self, line, left, op, right):
-        """:arg left : AST.Expression
-           :arg op : string
-           :arg right : AST.Expression"""
+class Identifier(Node):
+    """Matches ID terminals when they are associated with a variable
+        Also, matches the production: expression -> ID"""
+
+    def __init__(self, line, identifier):
+        """:arg identifier : string"""
         super().__init__(line)
-        self.left = left
-        self.op = op
-        self.right = right
+        self.identifier = identifier
 
 
 class FunctionCallExpression(Node):
@@ -194,13 +134,15 @@ class FunctionCallExpression(Node):
         self.arguments = arguments
 
 
-class ExpressionList(Node):
-    def __init__(self, line=None, expression=None):
-        """:arg expression : AST.Expression"""
+class BinExpr(Node):
+    def __init__(self, line, left, op, right):
+        """:arg left : AST.Expression
+           :arg op : string
+           :arg right : AST.Expression"""
         super().__init__(line)
-        self.expressions = []
-        if expression is not None:
-            self.expressions.append(expression)
+        self.left = left
+        self.op = op
+        self.right = right
 
 
 class FunctionDefinition(Node):
@@ -216,15 +158,6 @@ class FunctionDefinition(Node):
         self.instructions = instructions
 
 
-class ArgumentsList(Node):
-    def __init__(self, line=None, argument=None):
-        """:arg argument : AST.Argument"""
-        super().__init__(line)
-        self.arguments = []
-        if argument is not None:
-            self.arguments.append(argument)
-
-
 class Argument(Node):
     def __init__(self, line, argument_type, argument_identifier):
         """:arg argument_type : string
@@ -232,16 +165,6 @@ class Argument(Node):
         super().__init__(line)
         self.argument_type = argument_type
         self.argument_identifier = argument_identifier
-
-
-class Identifier(Node):
-    """Matches ID terminals when they are associated with a variable
-        Also, matches the production: expression -> ID"""
-
-    def __init__(self, line, identifier):
-        """:arg identifier : string"""
-        super().__init__(line)
-        self.identifier = identifier
 
 
 class Variable(Node):
