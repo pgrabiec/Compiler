@@ -72,7 +72,7 @@ class TypeChecker(NodeVisitor):
 
     def visit_Declaration(self, node):
         type = node.variable_type
-        inits = node.inits.inits
+        inits = node.inits
         for init in inits:
             identifier = init.identifier
             expression = self.visit(init.expression)
@@ -84,9 +84,8 @@ class TypeChecker(NodeVisitor):
             try:  # Verify initialization value
                 self.ttype["="][type, expression]
             except KeyError:  # types mismatch
-                # TODO - check if it is necessary
-                self.error(init, "Declaration: attempt to initialize \'%s\' variable \'%s\' with \'%s\' value" %
-                           (type, identifier, expression))
+                self.error(init, "Error: Assignment of %s to %s" %
+                           (expression, type))
 
     # def visit_Inits(self, node): pass
 
@@ -109,11 +108,12 @@ class TypeChecker(NodeVisitor):
         if variable is None:
             self.error(node, "Error: Call of undefined fun \'%s\'" % identifier)
         else:
-            var_type = variable.type
-            try:
-                self.ttype["="][var_type, expression]
-            except KeyError:
-                self.error(node, "Error: Assignment of \'%s\' to \'%s\'" % (expression, var_type))
+            if expression is not None:
+                var_type = variable.type
+                try:
+                    self.ttype["="][var_type, expression]
+                except KeyError:
+                    self.error(node, "Error: Assignment of \'%s\' to \'%s\'" % (expression, var_type))
 
     def visit_ChoiceInstruction(self, node):
         self.visit(node.condition)
@@ -179,19 +179,22 @@ class TypeChecker(NodeVisitor):
     # "fun <fun_id>": (<ret_type>, [<Variable(id, type)>, ...])
     def visit_FunctionCallExpression(self, node):
         identifier = node.identifier
-        given_args = node.arguments.expressions
+        given_args = node.arguments
         fun_spec_tuple = self.scope_manager.seek_symbol("fun %s" % identifier)
         if fun_spec_tuple is None:
             self.error(node, "Error: Call of undefined function \'%s\'" % identifier)
             self.visit(node.arguments)
             return
+
         return_type, spec_args = fun_spec_tuple
+
         if len(given_args) != len(spec_args):
-            self.error(node, "Error: Improper number of args in in %s call" % identifier)
+            self.error(node, "Error: Improper number of args in %s call" % identifier)
             for arg in given_args:
                 self.visit(arg)
             if len(given_args) < len(spec_args):
                 return
+
         for i in range(0, len(spec_args)):
             given_arg = self.visit(given_args[i])  # visit(expression)
             spec_arg = spec_args[i]  # variable
@@ -199,9 +202,8 @@ class TypeChecker(NodeVisitor):
                 self.ttype["="][spec_arg.type, given_arg]
                 self.scope_manager.add_scope_symbol(spec_arg.identifier, spec_arg)
             except KeyError:
-                # TODO - check if it is necessary
-                self.error(node, "Function Call: argument no. %d type \'%s\' passed to %s is not compliant"
-                                 " with the specified arg type \'%s\'" % (i, given_arg, identifier, spec_arg.type))
+                self.error(node, "Error: Improper type of args in %s call" % identifier)
+                return return_type
         return return_type
 
     # function return type mapping in the self.scope_manager
@@ -226,19 +228,25 @@ class TypeChecker(NodeVisitor):
     def visit_FunctionDefinition(self, node):
         identifier = node.identifier
         return_type = node.type
-        arguments = node.arguments.arguments
-        instructions = node.instructions.instructions.segments
+        arguments = node.arguments
+        instructions = node.instructions
+
+        symbol_name = "fun %s" % identifier
+        function_symbol = self.scope_manager.seek_symbol(symbol_name)
+        if function_symbol is not None:
+            self.error(node, "Error: Redefinition of function \'%s\'" % identifier)
+            return
 
         arguments_variable_list = []
         for arg in arguments:
-            variable = AST.Variable(arg.lineno, arg.argument_identifier, arg.argument_type);
+            variable = AST.Variable(arg.lineno, arg.argument_identifier, arg.argument_type)
             arguments_variable_list.append(
                 variable
             )
 
-        self.scope_manager.add_scope_symbol("fun %s" % identifier, (return_type, arguments_variable_list))
+        self.scope_manager.add_scope_symbol(symbol_name, (return_type, arguments_variable_list))
 
-        self.scope_manager.push_scope("function %s" % identifier)
+        self.scope_manager.push_scope(symbol_name)
         self.scope_manager.add_scope_symbol("fun return_type", return_type)
         for variable in arguments_variable_list:
             self.scope_manager.add_scope_symbol(variable.identifier, variable)
@@ -251,10 +259,6 @@ class TypeChecker(NodeVisitor):
             self.error(node,
                        "Error: Missing return statement in function \'%s\' returning %s" % (identifier, return_type))
         self.scope_manager.pop_scope()
-
-    # def visit_ArgumentsList(self, node): pass
-
-    # def visit_Argument(self, node): pass
 
     def visit_Identifier(self, node):
         variable = self.scope_manager.seek_symbol(node.identifier)
