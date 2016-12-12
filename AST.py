@@ -5,6 +5,9 @@ class Node(object):
     def __init__(self, line):
         self.lineno = line
 
+    def accept(self, visitor):
+        return visitor.visit(self)
+
 
 class Program(Node):
     def __init__(self, line, segments):
