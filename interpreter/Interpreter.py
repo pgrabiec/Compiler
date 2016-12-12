@@ -1,10 +1,10 @@
-import AST
-import semantics.SymbolTable
-from Memory import *
-from Exceptions import *
-from visit import *
-
 import sys
+
+from Exceptions import *
+from Memory import *
+
+import AST
+from interpreter.visit import *
 
 sys.setrecursionlimit(10000)
 

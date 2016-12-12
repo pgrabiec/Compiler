@@ -253,7 +253,7 @@ class Cparser(object):
                              | expression LE expression
                              | expression GE expression """
         if len(p) == 4:
-            p[0] = ast.BinExpr(p.lineno(1), p[1], p[2], p[3])
+            p[0] = ast.BinExpr(p.lineno(2), p[1], p[2], p[3])
 
     def p_function_definition(self, p):
         """function_definition : TYPE ID '(' args_list_or_empty ')' compound_instructions """
