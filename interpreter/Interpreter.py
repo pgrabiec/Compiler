@@ -51,9 +51,7 @@ class Interpreter(object):
 
     @when(AST.Program)
     def visit(self, node):
-        # print("***AST.Program")
         for segment in node.segments:
-            # print("***Visit segment")
             self.visit(segment)
 
     # Mapping for identifier:
@@ -61,7 +59,6 @@ class Interpreter(object):
     # value: <value>
     @when(AST.Declaration)
     def visit(self, node):
-        # print("***AST.Declaration")
         inits = node.inits
         mem = self.mem
         for init in inits:
@@ -71,7 +68,6 @@ class Interpreter(object):
 
     @when(AST.PrintInstruction)
     def visit(self, node):
-        # print("***AST.PrintInstruction")
         args = node.args
         for arg in args:
             expression = self.visit(arg)
@@ -82,7 +78,6 @@ class Interpreter(object):
     # value: <instruction>
     @when(AST.LabeledInstruction)
     def visit(self, node):
-        # print("***AST.LabeledInstruction")
         identifier = node.identifier
         instruction = node.instruction
         self.mem.declare(identifier, instruction)
@@ -90,7 +85,6 @@ class Interpreter(object):
 
     @when(AST.Assignment)
     def visit(self, node):
-        # print("***AST.Assignment")
         identifier = node.identifier.identifier
         expression = self.visit(node.expression)
         self.mem.update_value(identifier, expression)
@@ -98,11 +92,9 @@ class Interpreter(object):
 
     @when(AST.ChoiceInstruction)
     def visit(self, node):
-        # print("***AST.ChoiceInstruction")
-        condition = self.visit(node.condition)
         instruction_true = node.instruction_true
         instruction_false = node.instruction_false
-        if integer_represents_true(condition):
+        if self.visit(node.condition):
             self.visit(instruction_true)
         else:
             if instruction_false is not None:
@@ -110,53 +102,44 @@ class Interpreter(object):
 
     @when(AST.WhileInstruction)
     def visit(self, node):
-        # print("***AST.WhileInstruction")
-        condition = node.condition
-        instruction = node.instruction
         mem = self.mem
-        while integer_represents_true(self.visit(condition)):
+        while self.visit(node.condition):
             mem.push_loop_scope()
             try:
-                self.visit(instruction)
-                mem.pop_loop_scopes()
+                self.visit(node.instruction)
+                mem.pop_current_loop_scopes()
             except BreakException:
-                mem.pop_loop_scopes()
+                mem.pop_current_loop_scopes()
                 break
             except ContinueException:
-                mem.pop_loop_scopes()
+                mem.pop_current_loop_scopes()
 
     @when(AST.RepeatInstruction)
     def visit(self, node):
-        # print("***AST.RepeatInstruction")
-        condition = node.condition
-        instruction = node.instruction
         mem = self.mem
         while True:
             mem.push_loop_scope()
             try:
-                self.visit(instruction)
-                mem.pop_loop_scopes()
+                self.visit(node.instruction)
+                mem.pop_current_loop_scopes()
             except ContinueException:
-                mem.pop_loop_scopes()
+                mem.pop_current_loop_scopes()
             except BreakException:
-                mem.pop_loop_scopes()
+                mem.pop_current_loop_scopes()
                 break
-            if not integer_represents_true(self.visit(condition)):
+            if self.visit(node.condition):
                 break
 
     @when(AST.ReturnInstruction)
     def visit(self, node):
-        # print("***AST.ReturnInstruction")
         raise ReturnValueException(self.visit(node.expression))
 
     @when(AST.BreakInstruction)
     def visit(self, node):
-        # print("***AST.BreakInstruction")
         raise BreakException()
 
     @when(AST.ContinueInstruction)
     def visit(self, node):
-        # print("***AST.ContinueInstruction")
         raise ContinueException()
 
     @when(AST.CompoundInstructions)
@@ -166,30 +149,24 @@ class Interpreter(object):
             self.visit(instruction)
         self.mem.pop_compound_instructions_scope()
 
-
     @when(AST.Const)
     def visit(self, node):
-        # print("***AST.Const")
         return self.visit(node.value)
 
     @when(AST.Integer)
     def visit(self, node):
-        # print("***AST.Integer")
         return int(node.value)
 
     @when(AST.Float)
     def visit(self, node):
-        # print("***AST.Float")
         return float(node.value)
 
     @when(AST.String)
     def visit(self, node):
-        # print("***AST.String")
         return str(node.value.strip('"'))
 
     @when(AST.Identifier)
     def visit(self, node):
-        # print("***AST.Identifier")
         identifier = node.identifier
         return self.mem.get_value(identifier)
 
@@ -198,7 +175,6 @@ class Interpreter(object):
     # value: tuple (<arguments>, <instructions>)
     @when(AST.FunctionCallExpression)
     def visit(self, node):
-        # print("***AST.FunctionCallExpression")
         mem = self.mem
         identifier = node.identifier
         expression_list = node.arguments
@@ -221,23 +197,20 @@ class Interpreter(object):
         try:
             for instruction in instructions.instructions:
                 self.visit(instruction)
-                raise Exception("Did not return any value from function")
+            raise Exception("Did not return any value from function: line " + str(instruction.lineno))
         except ReturnValueException as exception:
             mem.pop_function_scope()
             return exception.value
 
     @when(AST.BinExpr)
     def visit(self, node):
-        # print("***AST.BinExpr")
         left = self.visit(node.left)
-        # print("***LEFT" + str(left))
         right = self.visit(node.right)
         op = self.operators[node.op]
         return op(left, right)
 
     @when(AST.FunctionDefinition)
     def visit(self, node):
-        # print("***AST.FunctionDefinition")
         identifier = node.identifier
         arguments = node.arguments
         instructions = node.instructions

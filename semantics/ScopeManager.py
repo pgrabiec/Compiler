@@ -33,3 +33,7 @@ class ScopeManager:
             if scope.contains_symbol(name):
                 return scope.get_symbol(name)
         return None
+
+    def can_declare(self, name):
+        current_scope = poll(self.scopeSymbolTablesStack)
+        return not current_scope.contains_symbol(name)

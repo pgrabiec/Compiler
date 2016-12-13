@@ -185,7 +185,7 @@ class MemoryManager:
     def pop_compound_instructions_scope(self):
         self.scope_memory.pop_compound()
 
-    def pop_loop_scopes(self):
+    def pop_current_loop_scopes(self):
         if self.scope_memory.is_inside_loop():
             self.scope_memory.pop_loop()
 

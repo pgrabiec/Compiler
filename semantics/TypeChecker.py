@@ -76,7 +76,7 @@ class TypeChecker(NodeVisitor):
         for init in inits:
             identifier = init.identifier
             expression = self.visit(init.expression)
-            if self.scope_manager.seek_symbol(identifier) is None:  # No symbol in the scope
+            if self.scope_manager.can_declare(identifier):  # No symbol in the scope
                 self.scope_manager.add_scope_symbol(identifier,
                                                     AST.Variable(init.lineno, identifier, type))  # add symbol
             else:  # Symbol already present in scope
@@ -144,7 +144,9 @@ class TypeChecker(NodeVisitor):
             self.error(node, "Error: continue instruction outside a loop")
 
     def visit_CompoundInstructions(self, node):
+        self.scope_manager.push_scope("Compound instructions scope")
         self.visit(node.instructions)
+        self.scope_manager.pop_scope()
 
     def visit_Condition(self, node):
         self.visit(node.expression)

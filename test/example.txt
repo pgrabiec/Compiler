@@ -2,7 +2,7 @@
 
 int c = 65735346575434578;
 int iter = 0;
-
+print "ok";
 
 int step(int c, int div, int mul, int add) {
     if (c % 2 == 0)
@@ -11,7 +11,9 @@ int step(int c, int div, int mul, int add) {
         return mul * c + add;
 }
 
+print "ok";
 repeat {
+       print "ok";
     c = step(c, 2, 3, 1);
     iter = iter + 1;
 } until c == 1;

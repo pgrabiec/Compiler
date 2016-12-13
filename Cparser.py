@@ -76,15 +76,15 @@ class Cparser(object):
         if len(p) == 4:
             p[0] = ast.Init(p.lineno(1), p[1], p[3])
 
-    # # list
-    # def p_instructions(self, p):
-    #     """instructions : instructions instruction
-    #                     | instruction """
-    #     if len(p) == 3:
-    #         p[0] = p[1]
-    #         p[0].append(p[2])
-    #     elif len(p) == 2:
-    #         p[0] = [p[1]]
+    # list
+    def p_instructions(self, p):
+        """instructions : instructions instruction
+                        | instruction """
+        if len(p) == 3:
+            p[0] = p[1]
+            p[0].append(p[2])
+        elif len(p) == 2:
+            p[0] = [p[1]]
 
     # 1-1
     def p_instruction(self, p):
@@ -98,7 +98,7 @@ class Cparser(object):
                        | break_instruction
                        | continue_instruction
                        | compound_instructions
-                       | expression ';' """
+                       | expression ';'"""
         if len(p) == 2 or len(p) == 3:
             p[0] = p[1]
 
@@ -135,7 +135,7 @@ class Cparser(object):
             p[0] = ast.WhileInstruction(p.lineno(1), p[3], p[5])
 
     def p_repeat_instruction(self, p):
-        """repeat_instruction : REPEAT instruction UNTIL condition ';' """
+        """repeat_instruction : REPEAT instructions UNTIL condition ';' """
         if len(p) == 6:
             p[0] = ast.RepeatInstruction(p.lineno(1), p[2], p[4])
 
