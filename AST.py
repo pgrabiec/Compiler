@@ -48,19 +48,16 @@ class LabeledInstruction(Node):
 
 
 class Assignment(Node):
-    def __init__(self, line, variable, expression):
-        """:arg variable : AST.Identifier
+    def __init__(self, line, identifier, expression):
+        """:arg identifier : AST.Identifier
            :arg expression : AST.Expression"""
         super().__init__(line)
-        self.variable = variable
+        self.identifier = identifier
         self.expression = expression
 
 
 class ChoiceInstruction(Node):
     def __init__(self, line, condition, instruction_true, instruction_false):
-        """:arg instruction_true : AST.Instruction
-           :arg instruction_false : AST.Instruction
-           :arg condition : AST.Expression"""
         super().__init__(line)
         self.condition = condition
         self.instruction_true = instruction_true
@@ -69,17 +66,15 @@ class ChoiceInstruction(Node):
 
 class WhileInstruction(Node):
     def __init__(self, line, condition, instruction):
-        """:arg instruction : AST.Instruction"""
         super().__init__(line)
         self.condition = condition
         self.instruction = instruction
 
 
 class RepeatInstruction(Node):
-    def __init__(self, line, instructions, condition):
-        """:arg instructions : AST.Instructions"""
+    def __init__(self, line, instruction, condition):
         super().__init__(line)
-        self.instructions = instructions
+        self.instruction = instruction
         self.condition = condition
 
 
@@ -125,7 +120,7 @@ class String(Const):
 
 
 class Identifier(Node):
-    """Matches ID terminals when they are associated with a variable
+    """Matches ID terminals when they are associated with a identifier
         Also, matches the production: expression -> ID"""
 
     def __init__(self, line, identifier):

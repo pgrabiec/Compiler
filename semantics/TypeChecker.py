@@ -116,7 +116,9 @@ class TypeChecker(NodeVisitor):
                     self.error(node, "Error: Assignment of \'%s\' to \'%s\'" % (expression, var_type))
 
     def visit_ChoiceInstruction(self, node):
-        self.visit(node.condition)
+        condition_type = self.visit(node.condition)
+        if condition_type not in ["int"]:
+            self.error(node, "Error: Condition type must be int")
         self.visit(node.instruction_true)
         if node.instruction_false is not None:
             self.visit(node.instruction_false)
@@ -190,7 +192,7 @@ class TypeChecker(NodeVisitor):
 
         for i in range(0, len(spec_args)):
             given_arg = self.visit(given_args[i])  # visit(expression)
-            spec_arg = spec_args[i]  # variable
+            spec_arg = spec_args[i]  # identifier
             try:
                 self.ttype["="][spec_arg.type, given_arg]
                 self.scope_manager.add_scope_symbol(spec_arg.identifier, spec_arg)
@@ -257,6 +259,6 @@ class TypeChecker(NodeVisitor):
     def visit_Identifier(self, node):
         variable = self.scope_manager.seek_symbol(node.identifier)
         if variable is None:
-            self.error(node, "Error: Usage of undeclared variable \'%s\'" % node.identifier)
+            self.error(node, "Error: Usage of undeclared identifier \'%s\'" % node.identifier)
             return
         return variable.type

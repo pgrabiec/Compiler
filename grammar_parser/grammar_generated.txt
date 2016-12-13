@@ -32,7 +32,7 @@ choice_instruction -> IF '(' error ')' instruction %prec IFX
 choice_instruction -> IF '(' error ')' instruction ELSE instruction
 while_instruction -> WHILE '(' condition ')' instruction
 while_instruction -> WHILE '(' error ')' instruction
-repeat_instruction -> REPEAT instructions UNTIL condition ';'
+repeat_instruction -> REPEAT instruction UNTIL condition ';'
 return_instruction -> RETURN expression ';'
 break_instruction -> BREAK ';'
 continue_instruction -> CONTINUE ';'

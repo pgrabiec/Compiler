@@ -82,7 +82,7 @@ class Cparser(object):
 
     # list
     def p_instructions(self, p):
-        """instructions : instructions instruction
+        """instruction : instruction instruction
                         | instruction """
         if len(p) == 3:
             p[0] = p[1]
@@ -139,7 +139,7 @@ class Cparser(object):
             p[0] = ast.WhileInstruction(p.lineno(1), p[3], p[5])
 
     def p_repeat_instruction(self, p):
-        """repeat_instruction : REPEAT instructions UNTIL condition ';' """
+        """repeat_instruction : REPEAT instruction UNTIL condition ';' """
         if len(p) == 6:
             p[0] = ast.RepeatInstruction(p.lineno(1), p[2], p[4])
 
