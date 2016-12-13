@@ -102,11 +102,11 @@ class TypeChecker(NodeVisitor):
         self.visit(node.instruction)
 
     def visit_Assignment(self, node):
-        identifier = node.variable.identifier
+        identifier = node.identifier.identifier
         expression = self.visit(node.expression)
         variable = self.scope_manager.seek_symbol(identifier)
         if variable is None:
-            self.error(node, "Error: Call of undefined fun \'%s\'" % identifier)
+            self.error(node, "Error: reference to undeclared variable \'%s\'" % identifier.identifier)
         else:
             if expression is not None:
                 var_type = variable.type
@@ -131,7 +131,7 @@ class TypeChecker(NodeVisitor):
 
     def visit_RepeatInstruction(self, node):
         self.in_loop = True
-        self.visit(node.instructions)
+        self.visit(node.instruction)
         self.visit(node.condition)
         self.in_loop = False
 
@@ -225,7 +225,7 @@ class TypeChecker(NodeVisitor):
         identifier = node.identifier
         return_type = node.type
         arguments = node.arguments
-        instructions = node.instructions
+        instructions = node.instructions.instructions
 
         symbol_name = "fun %s" % identifier
         function_symbol = self.scope_manager.seek_symbol(symbol_name)

@@ -37,7 +37,7 @@ class MemoryStack:
         i = size - 1
         while i >= 0:
             memory = self.mem_stack[i]
-            if name in memory:
+            if memory.has_key(name):
                 return memory.get(name)
             i -= 1
         return None
@@ -48,7 +48,7 @@ class MemoryStack:
         i = size - 1
         while i >= 0:
             memory = self.mem_stack[i]
-            if name in memory:
+            if memory.has_key(name):
                 return True
             if memory.name == "function memory":
                 return False
@@ -67,7 +67,7 @@ class MemoryStack:
         i = size - 1
         while i >= 0:
             memory = self.mem_stack[i]
-            if name in memory:
+            if memory.has_key(name):
                 memory.put(name, value)
             if memory.name == "function memory":
                 return

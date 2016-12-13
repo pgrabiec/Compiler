@@ -32,22 +32,18 @@ class Cparser(object):
         else:
             print("Unexpected end of input")
 
-    # 1-1
     def p_program(self, p):
         """program : segments"""
         if len(p) == 2:
-            p[0] = p[1]
+            p[0] = ast.Program(p.lineno(1), p[1])
 
     # list
     def p_segments(self, p):
         """segments : segments segment
                     | """
         if len(p) == 3:
-            if p[1] is None:
-                p[0] = [p[2]]
-            else:
-                p[0] = p[1]
-                p[0].append(p[2])
+            p[0] = p[1]
+            p[0].append(p[2])
         elif len(p) == 1:
             p[0] = []
 
@@ -80,15 +76,15 @@ class Cparser(object):
         if len(p) == 4:
             p[0] = ast.Init(p.lineno(1), p[1], p[3])
 
-    # list
-    def p_instructions(self, p):
-        """instruction : instruction instruction
-                        | instruction """
-        if len(p) == 3:
-            p[0] = p[1]
-            p[0].append(p[2])
-        elif len(p) == 2:
-            p[0] = [p[1]]
+    # # list
+    # def p_instructions(self, p):
+    #     """instructions : instructions instruction
+    #                     | instruction """
+    #     if len(p) == 3:
+    #         p[0] = p[1]
+    #         p[0].append(p[2])
+    #     elif len(p) == 2:
+    #         p[0] = [p[1]]
 
     # 1-1
     def p_instruction(self, p):

@@ -1,6 +1,6 @@
 class Node(object):
-    def __str__(self):
-        return self.printTree(0)
+    #def __str__(self):
+    #    return self.printTree(0)
 
     def __init__(self, line):
         self.lineno = line
@@ -122,7 +122,6 @@ class String(Const):
 class Identifier(Node):
     """Matches ID terminals when they are associated with a identifier
         Also, matches the production: expression -> ID"""
-
     def __init__(self, line, identifier):
         """:arg identifier : string"""
         super().__init__(line)
@@ -150,13 +149,11 @@ class BinExpr(Node):
 
 
 class FunctionDefinition(Node):
-    def __init__(self, line, type, identifier, arguments, instructions):
-        """:arg type : string
-           :arg identifier : string
-           :arg arguments : AST.ArgumentsList
-           :arg instructions : AST.CompoundInstruction"""
+    def __init__(self, line, return_type, identifier, arguments, instructions):
+        """:arg return_type : string
+           :arg identifier : string"""
         super().__init__(line)
-        self.type = type
+        self.type = return_type
         self.identifier = identifier
         self.arguments = arguments
         self.instructions = instructions

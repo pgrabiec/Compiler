@@ -4,8 +4,9 @@
 *.pyc
 parsetab.py
 __pycache__
-acceptance_test.py
-/tests_err/
+test/acceptance_test.py
+/test/test_parser/
 /tests_1/
 /acceptance_1_test.py
 /tmp/
+/test
