@@ -118,10 +118,12 @@ class Interpreter(object):
     def visit(self, node):
         mem = self.mem
         while True:
+            print("KOKOKOKKO")
             mem.push_loop_scope()
             try:
                 self.visit(node.instruction)
                 mem.pop_current_loop_scopes()
+                print(self.visit(node.condition))
             except ContinueException:
                 mem.pop_current_loop_scopes()
             except BreakException:
