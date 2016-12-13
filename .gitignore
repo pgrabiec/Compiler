@@ -4,6 +4,5 @@
 *.pyc
 parsetab.py
 __pycache__
-/test
 /tests_1/
 /tmp/

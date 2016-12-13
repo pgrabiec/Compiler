@@ -157,7 +157,7 @@ class Cparser(object):
     def p_compound_instructions(self, p):
         """compound_instructions : '{' compound_segments '}' """
         if len(p) == 4:
-            p[0] = ast.CompoundInstructions(p.lineno(1), p[2])
+            p[0] = ast.CompoundInstructions(p.lineno(1), p[2], p.lineno(3))
 
     # list
     def p_compound_segments(self, p):
@@ -253,7 +253,7 @@ class Cparser(object):
     def p_function_definition(self, p):
         """function_definition : TYPE ID '(' args_list_or_empty ')' compound_instructions """
         if len(p) == 7:
-            p[0] = ast.FunctionDefinition(p.lineno(1), p[1], p[2], p[4], p[6])
+            p[0] = ast.FunctionDefinition(p.lineno(1), p[1], p[2], p[4], p[6], p[6].end_lineno)
 
     # list
     def p_args_list(self, p):

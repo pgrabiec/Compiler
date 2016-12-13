@@ -93,9 +93,10 @@ class ContinueInstruction(Node):
 
 
 class CompoundInstructions(Node):
-    def __init__(self, line, instructions):
+    def __init__(self, line, instructions, end_lineno):
         super().__init__(line)
         self.instructions = instructions
+        self.end_lineno = end_lineno
 
 
 class Const(Node):
@@ -149,7 +150,7 @@ class BinExpr(Node):
 
 
 class FunctionDefinition(Node):
-    def __init__(self, line, return_type, identifier, arguments, instructions):
+    def __init__(self, line, return_type, identifier, arguments, instructions, end_lineno):
         """:arg return_type : string
            :arg identifier : string"""
         super().__init__(line)
@@ -157,6 +158,7 @@ class FunctionDefinition(Node):
         self.identifier = identifier
         self.arguments = arguments
         self.instructions = instructions
+        self.end_lineno = end_lineno
 
 
 class Argument(Node):

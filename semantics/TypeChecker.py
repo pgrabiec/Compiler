@@ -22,6 +22,9 @@ class TypeChecker(NodeVisitor):
     def error(self, node, description):
         self.errors.append("%s: line %d" % (description, node.lineno))
 
+    def error_l(self, description, lineno):
+        self.errors.append("%s: line %d" % (description, lineno))
+
     def init_ttype(self):
         for operator in '+-*/':  # c
             self.ttype[operator] = {
@@ -106,7 +109,7 @@ class TypeChecker(NodeVisitor):
         expression = self.visit(node.expression)
         variable = self.scope_manager.seek_symbol(identifier)
         if variable is None:
-            self.error(node, "Error: reference to undeclared variable \'%s\'" % identifier.identifier)
+            self.error(node, "Error: reference to undeclared variable \'%s\'" % identifier)
         else:
             if expression is not None:
                 var_type = variable.type
@@ -239,6 +242,9 @@ class TypeChecker(NodeVisitor):
         arguments_variable_list = []
         for arg in arguments:
             variable = AST.Variable(arg.lineno, arg.argument_identifier, arg.argument_type)
+            for declared in arguments_variable_list:
+                if declared.identifier == arg.argument_identifier:
+                    self.error(arg, "Error: Variable '%s' already declared" % arg.argument_identifier)
             arguments_variable_list.append(
                 variable
             )
@@ -255,13 +261,12 @@ class TypeChecker(NodeVisitor):
             self.visit(instr)
 
         if not self.return_statement_occurred:
-            self.error(node,
-                       "Error: Missing return statement in function \'%s\' returning %s" % (identifier, return_type))
+            self.error_l("Error: Missing return statement in function \'%s\' returning %s" % (identifier, return_type), node.instructions.end_lineno)
         self.scope_manager.pop_scope()
 
     def visit_Identifier(self, node):
         variable = self.scope_manager.seek_symbol(node.identifier)
         if variable is None:
-            self.error(node, "Error: Usage of undeclared identifier \'%s\'" % node.identifier)
+            self.error(node, "Error: Usage of undeclared variable \'%s\'" % node.identifier)
             return
         return variable.type
