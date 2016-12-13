@@ -49,6 +49,11 @@ class Interpreter(object):
     def visit(self, node):
         pass
 
+    @when(list)
+    def visit(self, node):
+        for item in node:
+            self.visit(item)
+
     @when(AST.Program)
     def visit(self, node):
         for segment in node.segments:
@@ -118,12 +123,10 @@ class Interpreter(object):
     def visit(self, node):
         mem = self.mem
         while True:
-            print("KOKOKOKKO")
             mem.push_loop_scope()
             try:
                 self.visit(node.instruction)
                 mem.pop_current_loop_scopes()
-                print(self.visit(node.condition))
             except ContinueException:
                 mem.pop_current_loop_scopes()
             except BreakException:
@@ -147,8 +150,8 @@ class Interpreter(object):
     @when(AST.CompoundInstructions)
     def visit(self, node):
         self.mem.push_compound_instructions_scope()
-        for instruction in node.instructions:
-            self.visit(instruction)
+        self.visit(node.instructions)
+        # print(str(self.mem.scope_memory))
         self.mem.pop_compound_instructions_scope()
 
     @when(AST.Const)

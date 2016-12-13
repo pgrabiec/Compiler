@@ -1,23 +1,43 @@
-# "mathematics is not yet ready for such problems"
+int x = 0;
 
-int c = 65735346575434578;
-int iter = 0;
-print "ok";
 
-int step(int c, int div, int mul, int add) {
-    if (c % 2 == 0)
-        return c / div;
-    else
-        return mul * c + add;
+int primes(int maxprime) {
+	int i = 3, j = 0;
+
+	if(maxprime > 2) {
+		print 2;
+	}
+
+	while(1) {
+		j = 2;
+		while(j < i) {
+			if(i % j == 0) {
+				# Break - composite number
+				break;
+			}
+
+			j = j + 1;
+		}
+
+		if(i == j) {
+			# We have prime!
+			print i;
+		}
+
+		i = i + 1;
+
+		# Check condition and act accordingly
+		if(i < maxprime) {
+			continue;
+		} else {
+			break;
+		}
+
+		# This should never happen
+		print "Error!";
+	}
+return 0;
 }
 
-print "ok";
-repeat {
-       print "ok";
-    c = step(c, 2, 3, 1);
-    iter = iter + 1;
-} until c == 1;
-
-print "Reached 1 after";
-print iter;
-print "iterations";
+print "Primes up to 100...";
+primes(100);

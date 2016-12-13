@@ -39,6 +39,8 @@ class MemoryStack:
             memory = self.mem_stack[i]
             if memory.has_key(name):
                 return memory.get(name)
+            if memory.name == "function memory":
+                return None
             i -= 1
         return None
 
@@ -69,6 +71,7 @@ class MemoryStack:
             memory = self.mem_stack[i]
             if memory.has_key(name):
                 memory.put(name, value)
+                return
             if memory.name == "function memory":
                 return
             i -= 1
@@ -144,6 +147,16 @@ class MemoryStack:
             i -= 1
         return False;
 
+    def __str__(self):
+        result = "--------BOTTOM---------\n"
+        for memory in self.mem_stack:
+            result += "->" + str(memory.name) + "\n"
+            for key in memory.variables:
+                result += "\tkey: " + str(key) + " value: " + str(memory.get(key)) + "\n"
+        result += "-----------TOP---------\n"
+        return result
+
+
 
 class MemoryManager:
     def __init__(self):
@@ -163,29 +176,39 @@ class MemoryManager:
         else:
             if self.global_memory.has_key(name):
                 self.global_memory.put(name, value)
+        # print("****update " + str(name) + " = " + str(value))
 
     def get_value(self, name):
         value = self.scope_memory.get(name)
         if value is None:
             return self.global_memory.get(name)
+        # print("****get: " + str(name) + " = " + str(value))
         return value
+
+
 
     def push_function_scope(self):
         self.scope_memory.push(Memory("function memory"))
+        # print(str(self.scope_memory))
 
     def push_compound_instructions_scope(self):
         self.scope_memory.push(Memory("compound instruction memory"))
+        # print(str(self.scope_memory))
 
     def push_loop_scope(self):
         self.scope_memory.push(Memory("loop memory"))
+        # print(str(self.scope_memory))
 
     def pop_function_scope(self):
         self.scope_memory.pop_function()
+        # print(str(self.scope_memory))
 
     def pop_compound_instructions_scope(self):
         self.scope_memory.pop_compound()
+        # print(str(self.scope_memory))
 
     def pop_current_loop_scopes(self):
         if self.scope_memory.is_inside_loop():
             self.scope_memory.pop_loop()
+        # print(str(self.scope_memory))
 

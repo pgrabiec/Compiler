@@ -124,10 +124,11 @@ class TypeChecker(NodeVisitor):
             self.visit(node.instruction_false)
 
     def visit_WhileInstruction(self, node):
+        in_other_loop = self.in_loop
         self.in_loop = True
         self.visit(node.condition)
         self.visit(node.instruction)
-        self.in_loop = False
+        self.in_loop = in_other_loop
 
     def visit_RepeatInstruction(self, node):
         self.in_loop = True
