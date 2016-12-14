@@ -55,7 +55,7 @@ class TypeChecker(NodeVisitor):
             ('int', 'int'): 'int',
             ('float', 'float'): 'float',
             ('float', 'int'): 'float',
-            ('int', 'float'): 'float',
+            #('int', 'float'): 'float',
             ('string', 'string'): 'string'
         }
 
@@ -79,20 +79,19 @@ class TypeChecker(NodeVisitor):
         for init in inits:
             identifier = init.identifier
             expression = self.visit(init.expression)
-            if self.scope_manager.can_declare(identifier):  # No symbol in the scope
-                self.scope_manager.add_scope_symbol(identifier,
-                                                    AST.Variable(init.lineno, identifier, type))  # add symbol
-            else:  # Symbol already present in scope
-                self.error(init, "Error: Variable \'%s\' already declared" % identifier)
-            try:  # Verify initialization value
-                self.ttype["="][type, expression]
-            except KeyError:  # types mismatch
-                self.error(init, "Error: Assignment of %s to %s" %
-                           (expression, type))
-
-    # def visit_Inits(self, node): pass
-
-    # def visit_Init(self, node): pass
+            if self.scope_manager.seek_symbol("fun %s" % identifier) is not None:
+                self.error(init, "Error: Function identifier \'%s\' used as a variable" % identifier)
+            else:
+                if self.scope_manager.can_declare(identifier):  # No variable symbol in the scope
+                    self.scope_manager.add_scope_symbol(identifier,
+                                                        AST.Variable(init.lineno, identifier, type))  # add symbol
+                else:  # Symbol already present in scope
+                    self.error(init, "Error: Variable \'%s\' already declared" % identifier)
+                try:  # Verify initialization value
+                    self.ttype["="][type, expression]
+                except KeyError:  # types mismatch
+                    self.error(init, "Error: Assignment of %s to %s" %
+                               (expression, type))
 
     def visit_Instructions(self, node):
         for instruction in node.instructions:
@@ -106,17 +105,16 @@ class TypeChecker(NodeVisitor):
 
     def visit_Assignment(self, node):
         identifier = node.identifier.identifier
-        expression = self.visit(node.expression)
         variable = self.scope_manager.seek_symbol(identifier)
         if variable is None:
-            self.error(node, "Error: reference to undeclared variable \'%s\'" % identifier)
-        else:
-            if expression is not None:
-                var_type = variable.type
-                try:
-                    self.ttype["="][var_type, expression]
-                except KeyError:
-                    self.error(node, "Error: Assignment of \'%s\' to \'%s\'" % (expression, var_type))
+            self.error(node, "Error: Variable \'%s\' undefined in current scope" % identifier)
+        expression = self.visit(node.expression)
+        if expression is not None and variable is not None:
+            var_type = variable.type
+            try:
+                self.ttype["="][var_type, expression]
+            except KeyError:
+                self.error(node, "Error: Assignment of \'%s\' to \'%s\'" % (expression, var_type))
 
     def visit_ChoiceInstruction(self, node):
         condition_type = self.visit(node.condition)
@@ -171,6 +169,8 @@ class TypeChecker(NodeVisitor):
         left = self.visit(node.left)
         right = self.visit(node.right)
         op = node.op
+        if left is None or right is None or op is None:
+            return None
         try:
             return self.ttype[op][left, right]
         except KeyError:
@@ -218,7 +218,7 @@ class TypeChecker(NodeVisitor):
         ret_returning = self.visit(node.expression)
         if ret_returning is not None and ret_declared is not None:
             try:
-                self.ttype["="][ret_returning, ret_declared]
+                self.ttype["="][ret_declared, ret_returning]
             except KeyError:
                 self.error(node, "Error: Improper returned type, expected %s, got %s" %
                            (ret_declared, ret_returning))
@@ -265,7 +265,11 @@ class TypeChecker(NodeVisitor):
         self.scope_manager.pop_scope()
 
     def visit_Identifier(self, node):
-        variable = self.scope_manager.seek_symbol(node.identifier)
+        identifier = node.identifier
+        variable = self.scope_manager.seek_symbol(identifier)
+        if self.scope_manager.seek_symbol("fun %s" % identifier) is not None:
+            self.error(node, "Error: Function identifier \'%s\' used as a variable" % identifier)
+            return
         if variable is None:
             self.error(node, "Error: Usage of undeclared variable \'%s\'" % node.identifier)
             return

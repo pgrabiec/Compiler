@@ -24,8 +24,9 @@ if __name__ == '__main__':
 
     # -- Type Checker --
     typeChecker = TypeChecker()
-    typeChecker.visit(ast)
-    for err in typeChecker.errors:
-        print(err)
-    if len(typeChecker.errors) == 0:
-        ast.accept(Interpreter())
+    if ast is not None:
+        typeChecker.visit(ast)
+        for err in typeChecker.errors:
+            print(err)
+        if len(typeChecker.errors) == 0:
+            ast.accept(Interpreter())
